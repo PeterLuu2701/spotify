@@ -1,0 +1,87 @@
+.detail-artists {
+    background: linear-gradient(rgba(152, 150, 150, 0.374), rgb(30, 29, 29));
+    border-radius: 15px 15px 0 0;
+}
+
+.detail-artists .banner-artists .img-banner {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+}
+
+.detail-artists .banner-artists {
+    position: relative;
+}
+
+.detail-artists .banner-artists .info-artists {
+    position: absolute;
+    bottom: 10%;
+    left: 3%;
+}
+
+.detail-artists .banner-artists .name-artists {
+    font-size: 4rem;
+    font-weight: 900;
+    color: white;
+}
+
+.detail-artists .banner-artists .viewer {
+    color: white;
+    font-weight: 500;
+}
+
+.detail-artists .song-artists {
+    margin-left: 20px;
+}
+
+.detail-artists .song-artists .button {
+    /* color: white; */
+    display: flex;
+    align-items: center;
+    width: 18%;
+    justify-content: space-between;
+}
+
+.detail-artists .song-artists .btn-play{
+    background-color: transparent;
+}
+.detail-artists .song-artists .btn-play i {
+    color: rgb(59, 243, 59);
+    font-size: 3rem;
+}
+
+.detail-artists .song-artists .btn-follow {
+    border: 1px solid rgb(176, 176, 176);
+    padding: 5px 15px;
+    border-radius: 20px;
+    color: gray;
+}
+
+.detail-artists .song-artists .btn-follow:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+.detail-artists .song-artists .btn-more {
+    font-size: 3rem;
+}
+
+.detail-artists .song-artists .list-song .tittle-list-song {
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.detail-artists .list-song table {
+    border-spacing: 30px 5px;
+    border-collapse: separate;
+    /* width: auto; */
+}
+
+.detail-artists .list-song table button{
+    display: block;
+    width: 70vw;
+}
+.detail-artists .list-song table button:hover{
+    background-color: rgba(172, 171, 171, 0.31);
+}

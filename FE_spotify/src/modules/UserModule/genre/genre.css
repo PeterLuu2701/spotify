@@ -1,0 +1,48 @@
+.genre-page {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .genre-title {
+    font-size: 30px;
+    margin-bottom: 25px;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  .genre-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+  }
+  
+  .genre-box {
+    padding: 60px 50px;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .genre-box:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  
+  /* Add different background colors for each box */
+  .color-0 { background-color: #ff6b6b; }
+  .color-1 { background-color: #4ecdc4; }
+  .color-2 { background-color: #ffe66d; }
+  .color-3 { background-color: #6b6bff; }
+  .color-4 { background-color: #ff6bbd; }
+  .color-5 { background-color: #c44ecd; }
+  .color-6 { background-color: #66d9ff; }
+  .color-7 { background-color: #ffa07a; }
+  .color-8 { background-color: #8a2be2; }
+  .color-9 { background-color: #ff6347; }
+  

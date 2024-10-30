@@ -1,0 +1,41 @@
+header{
+    background-color: #121212;
+    height: 100px;
+    padding: 30px 0;
+    position: fixed;
+    width: 100%;
+    max-width: 1230px;
+    z-index: 1;
+}
+.header-left{
+    color: gray;
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: space-between; */
+    width: 4%;
+    font-size: 1.3rem;
+    margin-left: 40px;
+}
+.header-right{
+    margin: 0 30px;
+}
+.header-right button{
+    font-size: 1rem;
+    font-weight: 700;
+}
+.btn-signup{
+    background-color: transparent;
+    color: gray;
+
+    border:none;
+}
+.btn-signin{
+    padding: 20px 30px;
+    border-radius: 30px;
+}
+.header-right button:hover{
+    transform: scale(1.1);
+}
+.header-left button:hover{
+    color: white;
+}

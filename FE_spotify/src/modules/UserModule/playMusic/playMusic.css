@@ -1,0 +1,19 @@
+
+.play-music .btn-control button {
+    margin: 0 10px;
+}
+
+.play-music .btn-control button:hover {
+    transform: scale(1.2);
+    transition: .3s;
+}
+
+.showComment {
+    background-color: transparent;
+}
+
+.play-music .listFriend {
+    position: absolute;
+    right: 1%;
+    bottom: 20%;
+}

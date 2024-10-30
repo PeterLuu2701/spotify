@@ -1,0 +1,46 @@
+.homePage {
+    background: linear-gradient(to bottom, rgba(30, 30, 30, 1) 21%, rgba(18, 18, 18, 1) 100%);
+}
+
+.homePage .artists {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 10px;
+}
+
+.homePage .tittle {
+    color: white;
+}
+
+.homePage .artists .items-artists {
+    background-color: transparent;
+    border: none;
+    margin: 30px 10px;
+    padding: 10px 5px;
+}
+
+.homePage .items-artists img {
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.homePage .artists .items-artists:hover {
+    background-color: rgba(41, 40, 40, 0.374);
+}
+
+.homePage .items-artists .ant-card-body {
+    padding: 10px;
+}
+
+.homePage .items-artists .ant-card-meta-title {
+    color: white;
+    margin-bottom: 0 !important;
+}
+
+.homePage .items-artists .ant-card-meta-description {
+    color: gray;
+    font-weight: 500;
+}

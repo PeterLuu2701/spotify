@@ -1,0 +1,188 @@
+/* Container chính cho chi tiết playlist */
+.playlist-detail-container {
+  background-color: #121212; /* Nền tối */
+  padding: 40px;
+  color: white;
+}
+
+/* Header của Playlist */
+.playlist-header {
+  display: flex;
+  align-items: center;
+}
+
+/* Hình ảnh của Playlist */
+.playlist-cover {
+  width: 128px;
+  height: 128px;
+  border-radius: 8px;
+}
+
+/* Thông tin của Playlist */
+.playlist-info {
+  flex: 1;
+}
+
+/* Tiêu đề của Playlist */
+.playlist-title {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+/* Mô tả của Playlist */
+.playlist-description {
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+/* Meta của Playlist */
+.playlist-meta {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Nút Play */
+.btn-play {
+  background-color: #1db954;
+  color: white;
+  font-size: 18px;
+  padding: 12px 24px;
+  margin-top: 16px;
+}
+
+.btn-play i {
+  margin-right: 8px;
+}
+
+/* Danh sách bài hát */
+.playlist-songs {
+  margin-top: 40px;
+}
+
+.song-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.song-table-header {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.song-table td,
+.song-table th {
+  padding: 12px;
+}
+
+.song-row:hover {
+  background-color: #282828; /* Hiệu ứng hover */
+}
+
+.song-row td {
+  border-bottom: 1px solid #3e3e3e;
+}
+
+
+.custom-transparent-table .ant-table {
+  background-color: transparent; 
+  color: white;
+}
+
+.custom-transparent-table .ant-table-tbody tr td{
+  border-bottom: 1px solid rgba(128, 128, 128, 0.185);
+}
+
+.custom-transparent-table .ant-table-tbody > tr:hover {
+  background-color: rgba(111, 111, 111, 0.207) !important; 
+  color: white !important; 
+}
+
+.custom-transparent-table .ant-table-tbody .ant-table-cell-row-hover {
+  background-color: rgba(111, 111, 111, 0.207) !important; 
+  color: white !important; 
+}
+
+.custom-transparent-table .ant-table-thead th{
+  background-color: transparent !important;
+  border: none;
+  color: white !important;
+}
+
+.custom-transparent-table .ant-table-thead th::before{
+  background-color: transparent !important;
+  /* position: relative; */
+}
+
+
+.custom-button {
+  background-color: #0b9375; /* Màu nền */
+  color: white; /* Màu chữ */
+  border: none; /* Bỏ viền */
+  padding: 8px 16px; /* Khoảng cách bên trong */
+  border-radius: 9999px; /* Hình tròn */
+  transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+}
+
+.custom-button:hover {
+  background-color: white !important; /* Màu nền khi hover */
+  color: #0b9375 !important;
+  font-weight: bold !important;
+  border: 1px solid #0b9375 !important;
+}
+
+.custom-button:focus {
+  outline: none; /* Bỏ đường viền khi focus */
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.5); /* Hiệu ứng shadow khi focus */
+}
+
+
+.custom-input .ant-input::placeholder {
+  color: #a9a9a9; /* Màu xám cho placeholder */
+  font-weight: 500;
+}
+
+.custom-input{
+  background-color: rgb(68, 68, 68) !important;
+  border: none;
+  padding: 10px;
+}
+
+.custom-input .ant-input {
+  color: white; /* Màu chữ cho input */
+}
+
+
+.custom-modal .ant-modal-content{
+  background-color: rgb(49, 49, 49);
+  color: white;
+}
+
+.custom-modal .ant-modal-content p{
+  font-weight: bold;
+}
+
+.custom-input{
+  color: white;
+}
+
+.custom-input .ant-input::placeholder,
+.custom-input .ant-input-textarea::placeholder {
+  color: white !important; /* Màu sắc cho placeholder */
+  opacity: 0.5; /* Độ mờ nếu bạn muốn */
+}
+
+.playing {
+  background-color: rgba(60, 60, 60, 0.488); /* Màu nền cho hàng đang phát */
+  color: white; /* Màu chữ cho hàng đang phát */
+}
+
+.playing .pl-5 div:first-child{
+  color: green;
+  text-decoration: underline;
+  font-weight: bold;
+
+}
+
+.ant-table-placeholder{
+  background-color: none;
+}

@@ -1,0 +1,63 @@
+.btn-show-listFriend{
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+.friend-list img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message-list {
+    transition: 1s;
+    overflow-y: auto;
+    height: auto;
+}
+
+.message-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.my-message {
+    text-align: right;
+    background-color: #e6f3ff;
+}
+
+.their-message {
+    text-align: left;
+    background-color: #f1f0f0;
+}
+
+.message-input {
+    display: flex;
+}
+
+.message-input input {
+    flex: 1;
+    padding: 10px;
+}
+
+.message-input button {
+    padding: 10px;
+}
+
+/* css scroll message */
+.message-list::-webkit-scrollbar {
+    width: 10px;
+    scroll-behavior: smooth;
+}
+
+.message-list::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Màu của thanh cuộn */
+    border-radius: 5px;
+    /* Bo góc thanh cuộn */
+}
+
+.message-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* Màu của thanh cuộn khi hover */
+}

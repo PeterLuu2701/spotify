@@ -1,0 +1,122 @@
+.sidebar {
+  color: white;
+  padding-left: 20px;
+  line-height: 40px;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  background-color: #121212;
+  padding: 20px;
+}
+
+.sidebar .sidebar-top .logo-spotify {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.sidebar .sidebar-top i {
+  font-size: 1.5rem;
+}
+
+.sidebar .sidebar-top .btn-home,
+.sidebar .sidebar-top .btn-search {
+  color: gray;
+  font-weight: 500;
+}
+
+.sidebar .my-active {
+  color: white !important;
+}
+
+.sidebar .sidebar-top a i {
+  margin-right: 20px;
+}
+
+/* sidebar bottom */
+.sidebar-bottom {
+  background-color: #121212;
+}
+
+.sidebar-bottom .library {
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding-left: 20px;
+  color: gray;
+}
+
+.sidebar-bottom .library i {
+  font-size: 1.5rem;
+  margin-right: 20px;
+}
+
+.sidebar-bottom .create-playlist {
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  margin: 0 10px 40px;
+  padding: 10px 10px;
+  line-height: 30px;
+}
+
+.sidebar-bottom .create-playlist button {
+  background-color: white;
+  color: black;
+  border-radius: 20px;
+  padding: 3px 15px;
+  font-weight: 500;
+  margin-top: 20px;
+}
+.sidebar-bottom .footer-sidebar-bottom {
+  margin: 0 20px;
+  line-height: 20px;
+}
+.sidebar-bottom .footer-sidebar-bottom span {
+  font-size: 0.7rem;
+  color: gray;
+  margin: 0 7px;
+}
+
+.sidebar-bottom .languages .btn-languages {
+  border: 1px solid white;
+  margin: 20px;
+  padding: 0 20px;
+  border-radius: 20px;
+}
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.playlist-item:hover {
+  background-color: #3e3e3e;
+}
+
+.playlist-img {
+  border-radius: 4px;
+}
+
+.playlist-name {
+  font-size: 1rem;
+}
+
+.playlist-description {
+  font-size: 0.85rem;
+}
+
+.btn-createPlaylist:hover{
+  background-color: green !important;
+  color: white !important;
+}
+
+.btn-createPlaylist{
+  background-color: white !important;
+  color: green !important;
+  border: none;
+  transition: all 0.3s;
+}

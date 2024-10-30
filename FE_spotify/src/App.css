@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cập nhật các thành phần chính để chiếm toàn bộ chiều cao */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Đảm bảo phần #root và .App có chiều cao đầy đủ */
+#root {
+  background-color: #000000; /* Màu nền đen */
+  min-height: 100%;
+}
+
+/* Toàn bộ ứng dụng sẽ kế thừa màu nền */
+body,
+.App {
+  background-color: #000000; /* Màu nền đen */
+  min-height: 100vh; /* Chiều cao tối thiểu là toàn màn hình */
+  color: white; /* Đặt màu chữ mặc định là trắng */
+}
+
+/* Sửa kiểu hiển thị của các thành phần Ant Design */
+.ant-popover-inner-content {
+  display: none !important;
+}
+
+/* Định dạng sidebar */
+.sidebar {
+  background-color: #121212; /* Sidebar có màu tối hơn */
+  height: 100%;
+}
+
+/* Cập nhật container bên phải nếu có */
+.main-content {
+  background-color: #000000; /* Màu nền đen */
+  min-height: 100vh;
+  padding: 20px;
+}
