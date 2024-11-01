@@ -69,4 +69,24 @@ export class AppController {
 
     return response;
   }
+
+  @Get('/get-all-song-card')
+  async getAllSongCard() {
+    const response = await lastValueFrom(
+      this.catalogService.send('get-all-song-card', '').pipe(
+        catchError((err) => {
+          return of({
+            err,
+            message: 'Unable to get song cards',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
 }
