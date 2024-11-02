@@ -51,7 +51,7 @@ const FormLogin: React.FC<Props> = ({ propsHiddenModal }) => {
                 onFinish={onFinish}
             >
                 <Form.Item
-                    name="account"
+                    name="email"
                     rules={[{ required: true, message: 'Please input your Username!' }]}
                 >
                     <Input prefix={<UserOutlined />} placeholder="Username" />

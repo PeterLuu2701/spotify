@@ -35,6 +35,9 @@ export class AppController {
     );
 
     if (response?.err) {
+      console.log('env', process.env.RABBITMQ_URL);
+      
+      console.log('Error from auth service:', response.err);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -152,7 +155,7 @@ export class AppController {
       throw new UnauthorizedException('Invalid credentials');
     }
     console.log('Search result', response);
-    
+
     return response;
   }
 
