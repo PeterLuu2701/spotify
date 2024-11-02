@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { log } from 'console';
 import { catchError, lastValueFrom, of, retry, timeout } from 'rxjs';
 
 @Controller('api-gateway')
@@ -150,7 +151,8 @@ export class AppController {
     if (response?.err) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
+    console.log('Search result', response);
+    
     return response;
   }
 

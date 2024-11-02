@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
+import { error, log } from 'console';
 
 @Injectable()
 export class AppService {
@@ -73,6 +74,8 @@ export class AppService {
   async getAllGenres() {
     try {
       const allGenres = await this.prismaService.genres.findMany();
+      console.log(allGenres);
+      
       return allGenres;
     } catch (error) {
       throw new Error('Failed to get all genres');
@@ -86,7 +89,7 @@ export class AppService {
           genre_id: genreId,
         },
       });
-
+      console.log(songsByGenre)
       return songsByGenre;
     } catch (error) {
       console.error('Error fetching songs by artist:', error);
