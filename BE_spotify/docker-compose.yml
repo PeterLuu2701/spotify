@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  api-gateway:
+    container_name: api-gateway
+    build: ./api-gateway  # build bằng Dockerfile
+    # image:  # build bằng hub docker
+    ports:
+      - 8080:8080
+    networks:
+      - node-network
+  
+  auth-service:
+    container_name: auth-service
+    build: ./auth-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_users
+    networks:
+      - node-network
+  
+  catalog-service:
+    container_name: catalog-service
+    build: ./catalog-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_catalogs
+    networks:
+      - node-network
+  
+  playlist-service:
+    container_name: playlist-service
+    build: ./playlist-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_playlists
+    networks:
+      - node-network
+  
+networks:
+  node-network:
+    external: true
+      

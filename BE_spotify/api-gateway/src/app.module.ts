@@ -14,7 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
         name: 'AUTH_NAME',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: ['amqp://admin:1234@some-rabbit:5672'],
           queue: 'auth_queue',
           queueOptions: {
             durable: false,
@@ -28,7 +28,7 @@ import { JwtModule } from '@nestjs/jwt';
         name: 'CATALOG_NAME',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: ['amqp://admin:1234@some-rabbit:5672'],
           queue: 'catalog_queue',
           queueOptions: {
             durable: false,
@@ -42,7 +42,7 @@ import { JwtModule } from '@nestjs/jwt';
         name: 'PLAYLIST_NAME',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: ['amqp://admin:1234@some-rabbit:5672'],
           queue: 'playlist_queue',
           queueOptions: {
             durable: false,
@@ -56,7 +56,7 @@ import { JwtModule } from '@nestjs/jwt';
         name: 'STREAMING_NAME',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: ['amqp://admin:1234@some-rabbit:5672'],
           queue: 'streaming_queue',
           queueOptions: {
             durable: false,
@@ -70,7 +70,7 @@ import { JwtModule } from '@nestjs/jwt';
         name: 'SEARCH_NAME',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: ['amqp://admin:1234@some-rabbit:5672'],
           queue: 'search_queue',
           queueOptions: {
             durable: false,
