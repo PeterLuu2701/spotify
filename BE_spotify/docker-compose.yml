@@ -4,6 +4,8 @@ services:
     container_name: api-gateway
     build: ./api-gateway  # build bằng Dockerfile
     # image:  # build bằng hub docker
+    environment:
+      - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
     ports:
       - 8080:8080
     networks:
@@ -14,6 +16,7 @@ services:
     build: ./auth-service
     environment:
       - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_users
+      - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
     networks:
       - node-network
   
@@ -22,6 +25,7 @@ services:
     build: ./catalog-service
     environment:
       - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_catalogs
+      - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
     networks:
       - node-network
   
@@ -30,6 +34,7 @@ services:
     build: ./playlist-service
     environment:
       - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_playlists
+      - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
     networks:
       - node-network
   
