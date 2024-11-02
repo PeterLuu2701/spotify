@@ -3,10 +3,12 @@ import {
   Controller,
   Get,
   Inject,
+  Param,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { log } from 'console';
 import { catchError, lastValueFrom, of, retry, timeout } from 'rxjs';
 
 @Controller('api-gateway')
@@ -16,7 +18,7 @@ export class AppController {
     @Inject('CATALOG_NAME') private catalogService: ClientProxy,
     @Inject('PLAYLIST_NAME') private playlistService: ClientProxy,
     @Inject('STREAMING_NAME') private streamingService: ClientProxy,
-    @Inject('SEARCH_NAME') private searchService: ClientProxy
+    @Inject('SEARCH_NAME') private searchService: ClientProxy,
   ) {}
 
   @Post('/login')
@@ -78,6 +80,93 @@ export class AppController {
           return of({
             err,
             message: 'Unable to get song cards',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
+
+  @Get('/get-all-artists')
+  async getAllArtists() {
+    const response = await lastValueFrom(
+      this.catalogService.send('get-all-artists', '').pipe(
+        catchError((err) => {
+          return of({
+            err,
+            message: 'Unable to get artists',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
+
+  @Get('/get-songs-by-artist/:artistId')
+  async getSongsByArtist(@Param('artistId') artistId: number) {
+    const data = { artistId };
+
+    const response = await lastValueFrom(
+      this.catalogService.send('get-songs-by-artist', data).pipe(
+        catchError((err) => {
+          console.error('Error from catalog service:', err);
+          return of({
+            err,
+            message: 'Unable to get songs',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
+
+  @Get('/get-all-genres')
+  async getAllGenres() {
+    const response = await lastValueFrom(
+      this.catalogService.send('get-all-genres', '').pipe(
+        catchError((err) => {
+          return of({
+            err,
+            message: 'Unable to get genres',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    console.log('Search result', response);
+    
+    return response;
+  }
+
+  @Get('/get-songs-by-genre/:genreId')
+  async getSongsByGenres(@Param('genreId') genreId: number) {
+    const data = { genreId };
+
+    const response = await lastValueFrom(
+      this.catalogService.send('get-songs-by-genre', data).pipe(
+        catchError((err) => {
+          console.error('Error from catalog service:', err);
+          return of({
+            err,
+            message: 'Unable to get songs',
           });
         }),
       ),
