@@ -17,13 +17,13 @@ export default function Genre() {
   }, [dispatch]);
 
 const renderGenre = () => {
-    return songGenre?.map((genre: TypeGenre, index: number) => (
+    return songGenre?.map((genre, index: number) => (
       <div
-        key={genre.genreId}
+        key={genre.id}
         className={`genre-box color-${index % 10}`}
-        onClick={() => navigate(`/genre/${genre.genreId}`)}
+        onClick={() => navigate(`/genre/${genre.id}`)}
       >
-        {genre.nameGenre}
+        {genre.genre_name}
       </div>
     ));
   };

@@ -25,7 +25,7 @@ export default function UserLayout() {
             <Footer />
           </div>
           <div className="list-friend fixed bottom-12 right-10">
-            <ListFriend />
+            {/* <ListFriend /> */}
           </div>
         </ModalProvider>
       </div>

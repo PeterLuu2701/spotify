@@ -31,9 +31,9 @@ export default function Sidebar() {
   const playlistCount = playlists.length;
   const [currentId, setCurrentId] = useState(null);
 
-  useEffect(() => {
-    dispatch(getPlaylistByUser(currentUser?.user.userId));
-  }, [playListDetailById, currentUser]);
+  // useEffect(() => {
+  //   dispatch(getPlaylistByUser(currentUser?.user.userId));
+  // }, [playListDetailById, currentUser]);
 
   const handleCreatePlayList = async () => {
     const newPlaylist: TypePlaylistPost = {

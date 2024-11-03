@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { apiGetUser } from '../../../apis/apiGetUser';
 import { TypeUser } from '../../../types/typeUser';
 import { Link } from 'react-router-dom';
+import Genre from '../genre/Genre';
 
 const { Meta } = Card;
 export default function HomePage() {
@@ -12,9 +13,9 @@ export default function HomePage() {
         const result = await apiGetUser()
         setUser(Array.isArray(result) ? result : [result])
     }
-    useEffect(() => {
-        callApiGetUser()
-    }, [])
+    // useEffect(() => {
+    //     callApiGetUser()
+    // }, [])
 
     const renderArtists = () => {
         if (user) {
@@ -42,15 +43,18 @@ export default function HomePage() {
     }
     return (
         <section className='homePage'>
-            <div className='tittle pt-9 pl-5'>
+            {/* <div className='tittle pt-9 pl-5'>
                 <a className='text-xl font-bold'>Popular artists</a>
-            </div>
-            <div className='artists'>
+            </div> */}
+            {/* <div className='artists'>
                 {renderArtists()}
-            </div>
+            </div> */}
             {/* <div className='list-friend fixed bottom-5 right-10'>
                 <ListFriend />
             </div> */}
+            <div>
+                <Genre />
+            </div>
         </section>
     )
 }

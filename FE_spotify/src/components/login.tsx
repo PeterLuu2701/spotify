@@ -12,10 +12,10 @@ const FormLogin: React.FC<Props> = ({ propsHiddenModal }) => {
     const onFinish = async (values: any) => {
         try {
             const result = await apiLogin(values)
-
+            
             if (result) {
-                localStorage.setItem('user', JSON.stringify(result))
-                dispatch(userAction.setUser(result))
+                localStorage.setItem('token', result)
+                // dispatch(userAction.setUser(result))
                 success()
                 propsHiddenModal()
             }

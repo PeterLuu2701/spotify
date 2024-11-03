@@ -6,8 +6,8 @@ import api from './apiUtil';
 
 export const fetchAndSetSongGenre = () => async (dispatch: AppDispatch) => {
     try {
-        const response = await api.get<ResponseApi<TypeSong>>(`/genre`);
-        dispatch(songAction.setAllGenre(response.data.content));
+        const response = await api.get(`/get-all-genres`);
+        dispatch(songAction.setAllGenre(response.data));
     } catch (error: any) {
         console.error("Failed to fetch songs", error);
     }

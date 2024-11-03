@@ -4,11 +4,11 @@ const api = axios.create({
   baseURL: "http://localhost:8080/api-gateway",
 });
 api.interceptors.request.use((config: any) => {
-  const userLocal = localStorage.getItem("user");
-  const currentUser = userLocal ? JSON.parse(userLocal) : null;
+  const token = localStorage.getItem("token");
+  // const currentUser = userLocal ? JSON.parse(userLocal) : null;
   config.headers = {
     ...config.headers,
-    token: currentUser ? currentUser.token : "",
+    token,
   };
   return config;
 });
