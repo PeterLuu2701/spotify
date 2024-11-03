@@ -23,8 +23,7 @@ export class AppService {
       let token = this.jwtService.sign(
         { userId: checkUser.id },
         {
-          expiresIn: '1d',
-          secret: 'token',
+          expiresIn: '1d'
         },
       );
       return token;

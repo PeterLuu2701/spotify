@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Inject,
   Param,
   Post,
@@ -21,6 +22,7 @@ export class AppController {
     @Inject('SEARCH_NAME') private searchService: ClientProxy,
   ) {}
 
+  // AUTH_SERVICE
   @Post('/login')
   async login(@Body() loginDto: { email: string; password: string }) {
     const response = await lastValueFrom(
@@ -75,6 +77,7 @@ export class AppController {
     return response;
   }
 
+  // CATALOG_SERVICE
   @Get('/get-all-song-card')
   async getAllSongCard() {
     const response = await lastValueFrom(
@@ -180,5 +183,58 @@ export class AppController {
     }
 
     return response;
+  }
+
+  @Get('/get-song-detail-by-song-id/:songId')
+  async getSongDetailBySongId(@Param('songId') songId: number) {
+    const data = { songId };
+
+    const response = await lastValueFrom(
+      this.catalogService.send('get-song-detail-by-song-id', data).pipe(
+        catchError((err) => {
+          console.error('Error from catalog service:', err);
+          return of({
+            err,
+            message: 'Unable to get song detail',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
+
+  // PLAYLIST_SERVICE
+  @Post('/create-playlist')
+  async createOrder(
+    @Headers('token') token: string,
+    @Body() body: { playlist_name: string }
+  ) {
+    try {
+      const { playlist_name } = body;
+
+      const response = await lastValueFrom(
+        this.playlistService.send('create-playlist', { token, playlist_name }).pipe(
+          catchError((err) => {
+            return of({
+              error: err.message,
+              message: 'Unable to create order',
+            });
+          })
+        )
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Playlist creation failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to create playlist');
+    }
   }
 }
