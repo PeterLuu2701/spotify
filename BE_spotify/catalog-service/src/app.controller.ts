@@ -31,4 +31,12 @@ export class AppController {
     const { genreId } = data
     return this.appService.getSongsByGenres(genreId);
   }
+
+  // getSongById
+  @MessagePattern('get-song-detail-by-song-id')
+  getSongDetailBySongId(@Payload() data: { songId: number }) {
+    const { songId } = data
+    return this.appService.getSongDetailBySongId(songId);
+  }
+  
 }

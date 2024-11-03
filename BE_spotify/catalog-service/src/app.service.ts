@@ -45,7 +45,7 @@ export class AppService {
         where: {
           song_artists: {
             some: {
-              artist_id: artistId,
+              artist_id: Number(artistId),
             },
           },
         },
@@ -86,7 +86,7 @@ export class AppService {
     try {
       const songsByGenre = await this.prismaService.songs.findMany({
         where: {
-          genre_id: genreId,
+          genre_id: Number(genreId),
         },
       });
       console.log(songsByGenre)
@@ -96,4 +96,25 @@ export class AppService {
       throw new Error('Failed to get songs by artist');
     }
   }
+
+  // getSongById
+  async getSongDetailBySongId(songId: number) {
+    try {
+      const songDetailById = await this.prismaService.songs.findFirst({
+        where: {
+          id: Number(songId),
+        },
+      });
+      console.log(songDetailById)
+      return songDetailById;
+    } catch (error) {
+      console.error('Error fetching song detail:', error);
+      throw new Error('Failed to get song detail');
+    }
+  }
+  // createPlayList
+  // deletePlaylist
+  // editPlayList
+  // getPlayListById
+  // getPlayListByUser
 }
