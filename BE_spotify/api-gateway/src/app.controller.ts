@@ -1,16 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   Inject,
   Param,
   Post,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { log } from 'console';
 import { catchError, lastValueFrom, of, retry, timeout } from 'rxjs';
+import { AuthGuard } from './guards/auth.guard';
 
 @Controller('api-gateway')
 export class AppController {
@@ -210,7 +213,8 @@ export class AppController {
 
   // PLAYLIST_SERVICE
   @Post('/create-playlist')
-  async createOrder(
+  @UseGuards(AuthGuard)
+  async createPlaylist(
     @Headers('token') token: string,
     @Body() body: { playlist_name: string }
   ) {
@@ -222,7 +226,7 @@ export class AppController {
           catchError((err) => {
             return of({
               error: err.message,
-              message: 'Unable to create order',
+              message: 'Unable to create playlist',
             });
           })
         )
@@ -235,6 +239,36 @@ export class AppController {
       return response;
     } catch (error) {
       throw new UnauthorizedException('Failed to create playlist');
+    }
+  }
+
+  @Delete('/delete-playlist')
+  @UseGuards(AuthGuard)
+  async deletePlaylist(
+    @Headers('token') token: string,
+    @Body() body: { playlist_id: string }
+  ) {
+    try {
+      const { playlist_id } = body;
+
+      const response = await lastValueFrom(
+        this.playlistService.send('delete-playlist', { token, playlist_id }).pipe(
+          catchError((err) => {
+            return of({
+              error: err.message,
+              message: 'Unable to delete playlist',
+            });
+          })
+        )
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Failed to delete playlist');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to delete playlist');
     }
   }
 }

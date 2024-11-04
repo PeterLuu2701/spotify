@@ -13,9 +13,10 @@ export class AppService {
   async createPlaylist(token: string, playlist_name: string) {
     try {
       console.log('Token:', token);
-      
+
       const decodedToken = this.authService.validateToken(token);
       console.log('Decoded Token:', decodedToken);
+
       const userId = decodedToken.userId;
       console.log('User ID:', userId);
 
@@ -23,6 +24,7 @@ export class AppService {
         data: {
           user_id: Number(userId),
           playlist_name,
+          create_date: new Date(),
         },
       });
 
@@ -31,7 +33,40 @@ export class AppService {
       throw error;
     }
   }
+
   // deletePlaylist
+  async deletePlaylist(token: string, playlist_id: number) {
+    try {
+      console.log('Token:', token);
+
+      const decodedToken = this.authService.validateToken(token);
+      console.log('Decoded Token:', decodedToken);
+
+      const userId = decodedToken.userId;
+      console.log('User ID:', userId);
+
+      const checkUser = await this.prismaService.playlists.findFirst({
+        where: {
+          user_id: userId,
+        },
+      });
+
+      if (checkUser) {
+        const playlistToDelete = await this.prismaService.playlists.delete({
+          where: {
+            id: playlist_id,
+          },
+        });
+        
+        return playlistToDelete;
+      } else {
+        return 'You can only delete your playlists';
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // editPlayList
   // getPlayListById
   // getPlayListByUser
