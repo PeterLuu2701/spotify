@@ -47,17 +47,18 @@ export class AppService {
 
       const checkUser = await this.prismaService.playlists.findFirst({
         where: {
-          user_id: userId,
+          user_id: Number(userId),
+          id: playlist_id,
         },
       });
-
+      console.log('Playlist ID:', playlist_id);
       if (checkUser) {
         const playlistToDelete = await this.prismaService.playlists.delete({
           where: {
-            id: playlist_id,
+            id: Number(playlist_id),
           },
         });
-        
+
         return playlistToDelete;
       } else {
         return 'You can only delete your playlists';
@@ -70,7 +71,4 @@ export class AppService {
   // editPlayList
   // getPlayListById
   // getPlayListByUser
-  getHello(): string {
-    return 'Hello World!';
-  }
 }
