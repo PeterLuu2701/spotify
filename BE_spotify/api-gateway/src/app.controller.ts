@@ -213,7 +213,7 @@ export class AppController {
 
   // PLAYLIST_SERVICE
   @Post('/create-playlist')
-  @UseGuards(AuthGuard)
+  @UseGuards()
   async createPlaylist(
     @Headers('token') token: string,
     @Body() body: { playlist_name: string }
@@ -243,7 +243,7 @@ export class AppController {
   }
 
   @Delete('/delete-playlist')
-  @UseGuards(AuthGuard)
+  @UseGuards()
   async deletePlaylist(
     @Headers('token') token: string,
     @Body() body: { playlist_id: string }
@@ -263,7 +263,7 @@ export class AppController {
       );
 
       if (response?.error) {
-        throw new UnauthorizedException(response.message || 'Failed to delete playlist');
+        throw new UnauthorizedException(response.message);
       }
 
       return response;
