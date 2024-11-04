@@ -17,6 +17,14 @@ export class AppController {
   }
 
   // deletePlaylist
+  @MessagePattern('delete-playlist')
+  deletePlaylist(
+    @Payload() data: { token: string; playlist_id: number }
+  ) {
+    const token = data.token.replace('Bearer ', '');
+  const { playlist_id } = data;
+    return this.appService.deletePlaylist(token, playlist_id);
+  }
   // editPlayList
   // getPlayListById
   // getPlayListByUser

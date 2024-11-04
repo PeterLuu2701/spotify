@@ -20,12 +20,7 @@ export class AppService {
     });
 
     if (checkUser) {
-      let token = this.jwtService.sign(
-        { userId: checkUser.id },
-        {
-          expiresIn: '1d'
-        },
-      );
+      let token = this.jwtService.sign({ userId: checkUser.id });
       return token;
     } else {
       return 'Wrong email or password';
@@ -50,8 +45,8 @@ export class AppService {
         description,
         banner,
         nationality,
-        role: 'user'
-      }
+        role: 'user',
+      },
     });
 
     return user;
