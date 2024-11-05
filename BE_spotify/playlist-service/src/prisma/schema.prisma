@@ -18,7 +18,7 @@ model playlist_songs {
 model playlists {
   id             Int              @id @default(autoincrement())
   playlist_name  String           @db.VarChar(100)
-  description    String?
+  description    String?          @db.VarChar(255)
   user_id        Int
   is_public      Boolean?         @default(true)
   image          String?          @db.VarChar(255)

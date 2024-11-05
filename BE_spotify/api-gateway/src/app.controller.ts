@@ -6,7 +6,9 @@ import {
   Headers,
   Inject,
   Param,
+  Patch,
   Post,
+  Put,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -216,13 +218,13 @@ export class AppController {
   @UseGuards()
   async createPlaylist(
     @Headers('token') token: string,
-    @Body() body: { playlist_name: string }
+    @Body() body: { playlist_name: string; description: string; is_public: boolean; image: string }
   ) {
     try {
-      const { playlist_name } = body;
+      const { playlist_name, description, is_public, image } = body;
 
       const response = await lastValueFrom(
-        this.playlistService.send('create-playlist', { token, playlist_name }).pipe(
+        this.playlistService.send('create-playlist', { token, playlist_name, description, is_public, image }).pipe(
           catchError((err) => {
             return of({
               error: err.message,
@@ -270,5 +272,81 @@ export class AppController {
     } catch (error) {
       throw new UnauthorizedException('Failed to delete playlist');
     }
+  }
+
+  @Patch('/edit-playlist')
+  @UseGuards()
+  async editPlaylist(
+    @Headers('token') token: string,
+    @Body() body: { playlist_id: number; playlist_name: string; description: string; is_public: boolean; image: string }
+  ) {
+    try {
+      const { playlist_id, playlist_name, description, is_public, image } = body;
+
+      const response = await lastValueFrom(
+        this.playlistService.send('edit-playlist', { token, playlist_id, playlist_name, description, is_public, image }).pipe(
+          catchError((err) => {
+            return of({
+              error: err.message,
+              message: 'Unable to edit playlist',
+            });
+          })
+        )
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Playlist creation failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to edit playlist');
+    }
+  }
+
+  @Get('/get-playlist-by-playlist-id/:playlistId')
+  async getPlaylistByPlaylistId(@Param('playlistId') playlistId: number) {
+    const data = { playlistId };
+
+    const response = await lastValueFrom(
+      this.playlistService.send('get-playlist-by-playlist-id', data).pipe(
+        catchError((err) => {
+          console.error('Error from playlist service:', err);
+          return of({
+            err,
+            message: 'Unable to get playlist',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
+
+  @Get('/get-playlist-by-user-id/:userId')
+  async getPlaylistByUserId(@Param('userId') userId: number) {
+    const data = { userId };
+
+    const response = await lastValueFrom(
+      this.playlistService.send('get-playlist-by-user-id', data).pipe(
+        catchError((err) => {
+          console.error('Error from playlist service:', err);
+          return of({
+            err,
+            message: 'Unable to get playlist',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
   }
 }
