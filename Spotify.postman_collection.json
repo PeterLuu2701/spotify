@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"alicesmith@example.com\",\r\n    \"password\": \"password456\"\r\n}",
+					"raw": "{\r\n    \"email\": \"test@gmail.com\",\r\n    \"password\": \"1234\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -154,6 +154,155 @@
 						"api-gateway",
 						"get-songs-by-genre",
 						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Song Detail By Song Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api-gateway/get-song-detail-by-song-id/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"get-song-detail-by-song-id",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Playlist",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMDY5NTMxOSwiZXhwIjoxNzMwNzgxNzE5fQ.yJVkY4GgA9K0jYCFKAxrtfXy4_E35N1c61fLvB-qUNQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"playlist_name\": \"Testing Playlist　2\",\r\n    \"description:\": \"Dummy test\",\r\n    \"image\": \"Dummy\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api-gateway/create-playlist",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"create-playlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Playlist",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMDY5NTMxOSwiZXhwIjoxNzMwNzgxNzE5fQ.yJVkY4GgA9K0jYCFKAxrtfXy4_E35N1c61fLvB-qUNQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"playlist_id\": 8\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api-gateway/delete-playlist",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"delete-playlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Playlist",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "token",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMDc4MjA0NCwiZXhwIjoxNzMwODY4NDQ0fQ.W7pmIQ8VHWlRtj6v-Q3Tdsb-gIXSwouQK0Nl6fFHfBY",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"playlist_id\": 9,\r\n    \"playlist_name\": \"Put Test\",\r\n    \"description\": \"Put Test\",\r\n    \"image\": \"Put\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api-gateway/edit-playlist",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"edit-playlist"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "Bearer localhost:8080/api-gateway/create-playlist",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Playlist By Playlist Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api-gateway/get-playlist-by-playlist-id/9",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"get-playlist-by-playlist-id",
+						"9"
 					]
 				}
 			},
