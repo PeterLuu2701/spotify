@@ -12,7 +12,7 @@ export class AppService {
   async logIn(user: any) {
     let { email, password } = user;
 
-    let checkUser = await this.prismaService.users.findFirst({
+    let checkUser = await this.prismaService.dbUsersClient.users.findFirst({
       where: {
         email,
         password,
@@ -36,19 +36,49 @@ export class AppService {
     banner: string,
     nationality: string,
   ) {
-    const user = await this.prismaService.users.create({
-      data: {
-        name,
-        email,
-        password,
-        avatar,
-        description,
-        banner,
-        nationality,
-        role: 'user',
-      },
-    });
+    try {
+      const invalidUser = await this.prismaService.dbUsersClient.users.findFirst({
+        where: {
+          email
+        }
+      })
 
-    return user;
+      if (invalidUser){
+        return 'This email has already exist'
+      }
+      
+      const userInDbUsers = await this.prismaService.dbUsersClient.users.create(
+        {
+          data: {
+            name,
+            email,
+            password,
+            avatar,
+            description,
+            banner,
+            nationality,
+            role: 'user',
+          },
+        },
+      );
+
+      const userInDbStreaming =
+        await this.prismaService.dbStreamingClient.users.create({
+          data: {
+            name,
+            email,
+            password,
+            avatar,
+            description,
+            banner,
+            nationality,
+            role: 'user',
+          },
+        });
+
+      return { userInDbUsers, userInDbStreaming };
+    } catch (error) {
+      throw error;
+    }
   }
 }

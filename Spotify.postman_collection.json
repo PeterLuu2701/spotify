@@ -307,6 +307,26 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Playlist By User Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api-gateway/get-playlist-by-user-id/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"get-playlist-by-user-id",
+						"2"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
