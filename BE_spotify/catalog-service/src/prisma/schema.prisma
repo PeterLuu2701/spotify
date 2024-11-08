@@ -63,6 +63,7 @@ model songs {
   release_date DateTime?      @db.Date
   image        String?        @db.VarChar(255)
   genre_id     Int?
+  file_url     String         @default("") @db.VarChar(255)
   album_songs  album_songs[]
   song_artists song_artists[]
   genres       genres?        @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_genre")

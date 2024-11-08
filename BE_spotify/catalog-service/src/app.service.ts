@@ -1,22 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 import { error, log } from 'console';
+import { AwsS3Service } from '../../api-gateway/src/aws-s3.service';
+import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class AppService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private readonly awsS3Service: AwsS3Service,
+    private authService: AuthService,
+  ) {}
 
   async getAllSongCard() {
     try {
-      const allSongCard = await this.prismaService.songs.findMany({
-        include: {
-          song_artists: {
-            include: {
-              artists: true,
+      const allSongCard =
+        await this.prismaService.dbCatalogsClient.songs.findMany({
+          include: {
+            song_artists: {
+              include: {
+                artists: true,
+              },
             },
           },
-        },
-      });
+        });
 
       return allSongCard.map((song) => ({
         songName: song.song_name,
@@ -32,7 +39,8 @@ export class AppService {
 
   async getAllArtists() {
     try {
-      const allArtists = await this.prismaService.artists.findMany();
+      const allArtists =
+        await this.prismaService.dbCatalogsClient.artists.findMany();
       return allArtists;
     } catch (error) {
       throw new Error('Failed to get all artists');
@@ -41,22 +49,23 @@ export class AppService {
 
   async getSongsByArtist(artistId: number) {
     try {
-      const songsByArtist = await this.prismaService.songs.findMany({
-        where: {
-          song_artists: {
-            some: {
-              artist_id: Number(artistId),
+      const songsByArtist =
+        await this.prismaService.dbCatalogsClient.songs.findMany({
+          where: {
+            song_artists: {
+              some: {
+                artist_id: Number(artistId),
+              },
             },
           },
-        },
-        include: {
-          song_artists: {
-            include: {
-              artists: true,
+          include: {
+            song_artists: {
+              include: {
+                artists: true,
+              },
             },
           },
-        },
-      });
+        });
 
       return songsByArtist.map((song) => ({
         songName: song.song_name,
@@ -73,9 +82,10 @@ export class AppService {
 
   async getAllGenres() {
     try {
-      const allGenres = await this.prismaService.genres.findMany();
+      const allGenres =
+        await this.prismaService.dbCatalogsClient.genres.findMany();
       console.log(allGenres);
-      
+
       return allGenres;
     } catch (error) {
       throw new Error('Failed to get all genres');
@@ -84,12 +94,13 @@ export class AppService {
 
   async getSongsByGenres(genreId: number) {
     try {
-      const songsByGenre = await this.prismaService.songs.findMany({
-        where: {
-          genre_id: Number(genreId),
-        },
-      });
-      console.log(songsByGenre)
+      const songsByGenre =
+        await this.prismaService.dbCatalogsClient.songs.findMany({
+          where: {
+            genre_id: Number(genreId),
+          },
+        });
+      console.log(songsByGenre);
       return songsByGenre;
     } catch (error) {
       console.error('Error fetching songs by artist:', error);
@@ -100,21 +111,59 @@ export class AppService {
   // getSongById
   async getSongDetailBySongId(songId: number) {
     try {
-      const songDetailById = await this.prismaService.songs.findFirst({
-        where: {
-          id: Number(songId),
-        },
-      });
-      console.log(songDetailById)
+      const songDetailById =
+        await this.prismaService.dbCatalogsClient.songs.findFirst({
+          where: {
+            id: Number(songId),
+          },
+        });
+      console.log(songDetailById);
       return songDetailById;
     } catch (error) {
       console.error('Error fetching song detail:', error);
       throw new Error('Failed to get song detail');
     }
   }
-  // createPlayList
-  // deletePlaylist
-  // editPlayList
-  // getPlayListById
-  // getPlayListByUser
+
+  async createSong(
+    token: string,
+    song_name: string,
+    description: string | undefined,
+    album_id: number,
+    duration: string,
+    release_date: string,
+    genre_id: number,
+    image: string | undefined,
+    file_url: Express.Multer.File,
+  ) {
+    try {
+      console.log('Token:', token);
+
+      const decodedToken = this.authService.validateToken(token);
+      console.log('Decoded Token:', decodedToken);
+
+      const userId = decodedToken.userId;
+      console.log('User ID:', userId);
+
+      const fileUrl = await this.awsS3Service.uploadFile(file_url);
+
+      const newSong = await this.prismaService.dbCatalogsClient.songs.create({
+        data: {
+          song_name,
+          description,
+          album_id,
+          duration,
+          release_date,
+          genre_id,
+          image,
+          file_url: fileUrl,
+        },
+      });
+
+      return newSong;
+    } catch (error) {
+      console.error('Error creating song:', error);
+      throw new Error('Failed to create song');
+    }
+  }
 }

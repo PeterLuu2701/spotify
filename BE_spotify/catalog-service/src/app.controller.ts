@@ -39,4 +39,35 @@ export class AppController {
     return this.appService.getSongDetailBySongId(songId);
   }
   
+  //createSong
+  @MessagePattern('create-song')
+  async createSong(
+    @Payload()
+    data: {
+      token: string;
+      song_name: string;
+      description?: string;
+      album_id: number;
+      duration: string;
+      release_date: string;
+      genre_id: number;
+      image?: string;
+      file_url: Express.Multer.File
+    },
+  ) {
+    const token = data.token.replace('Bearer ', '');
+    const { song_name, description, album_id, duration, release_date, genre_id, image, file_url } = data;
+
+    return this.appService.createSong(
+      token,
+      song_name,
+      description,
+      album_id,
+      duration,
+      release_date,
+      genre_id,
+      image,
+      file_url
+    );
+  }
 }
