@@ -43,5 +43,14 @@ export class AppController {
     const { userId } = data
     return this.appService.getPlaylistByUserId(userId);
   }
+
+  // createSong
+  @MessagePattern('edit-playlist')
+  editPlaylist(@Payload() data: { token: string; playlist_id: number; playlist_name: string ; description: string; is_public: boolean; image: string }) {
+    const token = data.token.replace('Bearer ', '');
+    const { playlist_id, playlist_name, description, is_public, image } = data;
+    return this.appService.editPlaylist(token, playlist_id, playlist_name, description, is_public, image);
+  }
+
   
 }

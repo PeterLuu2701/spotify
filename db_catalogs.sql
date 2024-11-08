@@ -96,6 +96,7 @@ CREATE TABLE "public"."songs" (
     "release_date" date,
     "image" varchar(255),
     "genre_id" int4,
+    "file_url" varchar(255) NOT NULL DEFAULT ''::character varying,
     CONSTRAINT "songs_album_id_fkey" FOREIGN KEY ("album_id") REFERENCES "public"."albums"("id") ON DELETE SET NULL,
     CONSTRAINT "fk_genre" FOREIGN KEY ("genre_id") REFERENCES "public"."genres"("id"),
     PRIMARY KEY ("id")
@@ -157,11 +158,11 @@ INSERT INTO "public"."song_artists" ("id", "song_id", "artist_id") VALUES
 INSERT INTO "public"."song_artists" ("id", "song_id", "artist_id") VALUES
 (4, 4, 4);
 
-INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id") VALUES
-(1, 'Come Together', 'A popular song by The Beatles', 1, '00:04:20', '1969-09-26', 'come_together.jpg', 2);
-INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id") VALUES
-(2, 'So What', 'A jazz standard by Miles Davis', 2, '00:09:22', '1959-08-17', 'so_what.jpg', 3);
-INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id") VALUES
-(4, 'One More Time', 'An iconic song by Daft Punk', 4, '00:05:20', '2001-03-12', 'one_more_time.jpg', 1);
-INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id") VALUES
-(3, 'Shake It Off', 'A hit pop song by Taylor Swift', 3, '00:03:39', '2014-10-27', 'shake_it_off.jpg', 2);
+INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
+(1, 'Come Together', 'A popular song by The Beatles', 1, '00:04:20', '1969-09-26', 'come_together.jpg', 2, '');
+INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
+(2, 'So What', 'A jazz standard by Miles Davis', 2, '00:09:22', '1959-08-17', 'so_what.jpg', 3, '');
+INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
+(4, 'One More Time', 'An iconic song by Daft Punk', 4, '00:05:20', '2001-03-12', 'one_more_time.jpg', 1, '');
+INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
+(3, 'Shake It Off', 'A hit pop song by Taylor Swift', 3, '00:03:39', '2014-10-27', 'shake_it_off.jpg', 2, '');

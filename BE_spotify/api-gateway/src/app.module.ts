@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AwsS3Service } from './aws-s3.service';
 
 @Module({
   imports: [
@@ -104,6 +105,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     ]),
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [AwsS3Service],
 })
 export class AppModule {}
