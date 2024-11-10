@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Req,
   UnauthorizedException,
   UploadedFile,
   UseGuards,
@@ -19,8 +20,7 @@ import { log } from 'console';
 import { catchError, lastValueFrom, of, retry, timeout } from 'rxjs';
 import { AuthGuard } from './guards/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AwsS3Service } from './aws-s3.service'; 
-
+import { AwsS3Service } from './aws-s3.service';
 
 @Controller('api-gateway')
 export class AppController {
@@ -30,7 +30,7 @@ export class AppController {
     @Inject('PLAYLIST_NAME') private playlistService: ClientProxy,
     @Inject('STREAMING_NAME') private streamingService: ClientProxy,
     @Inject('SEARCH_NAME') private searchService: ClientProxy,
-    private readonly awsS3Service: AwsS3Service
+    private readonly awsS3Service: AwsS3Service,
   ) {}
 
   // AUTH_SERVICE
@@ -90,66 +90,70 @@ export class AppController {
 
   // CATALOG_SERVICE
   @Post('/create-song')
-@UseInterceptors(FileInterceptor('file_url'))
-@UseGuards()
-async createSong(
-  @Headers('token') token: string,
-  @Body()
-  body: {
-    song_name: string;
-    description?: string;
-    album_id: number;
-    duration: string;
-    release_date: string;
-    genre_id: number;
-    image?: string;
-  },
-  @UploadedFile() file_url: Express.Multer.File
-) {
-  console.log('Uploaded file:', file_url);
-  
-  try {
-    const { song_name, description, album_id, duration, release_date, genre_id, image } = body;
-
-    // Upload file to S3 and get the file URL
-    const fileUrl = await this.awsS3Service.uploadFile(file_url);
-
-    // Send the request to catalogService with the S3 URL
-    const response = await lastValueFrom(
-      this.catalogService
-        .send('create-song', {
-          token,
-          song_name,
-          description,
-          album_id,
-          duration,
-          release_date,
-          genre_id,
-          image,
-          file_url: fileUrl, // Use the URL instead of the file object
-        })
-        .pipe(
-          catchError((err) => {
-            return of({
-              error: err.message,
-              message: 'Unable to create song',
-            });
-          }),
-        ),
-    );
-
-    if (response?.error) {
-      throw new UnauthorizedException(
-        response.message || 'Song creation failed',
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('file_url'))
+  async createSong(
+    @Req() req: Request,
+    @Body()
+    body: {
+      song_name: string;
+      description?: string;
+      album_id: number;
+      duration: string;
+      release_date: string;
+      genre_id: number;
+      image?: string;
+    },
+    @UploadedFile() file_url: Express.Multer.File,
+  ) {
+    try {
+      const {
+        song_name,
+        description,
+        album_id,
+        duration,
+        release_date,
+        genre_id,
+        image,
+      } = body;
+      console.log('req--------', req['user']);
+      const fileUrl = await this.awsS3Service.uploadFile(file_url);
+      console.log('fileUrl', fileUrl);
+      // Send the request to catalogService with the S3 URL
+      const response = await lastValueFrom(
+        this.catalogService
+          .send('create-song', {
+            song_name,
+            description,
+            album_id: Number(album_id),
+            duration,
+            release_date,
+            genre_id: Number(genre_id),
+            image,
+            file_url: fileUrl, // Use the URL instead of the file object
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to create song',
+              });
+            }),
+          ),
       );
-    }
 
-    return response;
-  } catch (error) {
-    console.error('Error creating song:', error);
-    throw new UnauthorizedException('Failed to create song');
+      if (response?.error) {
+        throw new UnauthorizedException(
+          response.message || 'Song creation failed',
+        );
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Error creating song:', error);
+      throw new UnauthorizedException('Failed to create song');
+    }
   }
-}
 
   @Get('/get-all-song-card')
   async getAllSongCard() {
@@ -454,5 +458,4 @@ async createSong(
 
     return response;
   }
-
 }

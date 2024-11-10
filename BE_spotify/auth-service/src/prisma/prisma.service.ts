@@ -14,23 +14,23 @@ export class PrismaService {
         },
       },
     });
-
-    this.dbStreamingClient = new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_STREAMING_URL, 
-        },
-      },
-    });
+ 
+    // this.dbStreamingClient = new PrismaClient({
+    //   datasources: {
+    //     db: {
+    //       url: process.env.DATABASE_STREAMING_URL, 
+    //     },
+    //   },
+    // });
   }
 
   async onModuleInit() {
     await this.dbUsersClient.$connect();
-    await this.dbStreamingClient.$connect();
+    // await this.dbStreamingClient.$connect();
   }
 
   async onModuleDestroy() {
     await this.dbUsersClient.$disconnect();
-    await this.dbStreamingClient.$disconnect();
+    // await this.dbStreamingClient.$disconnect();
   }
 }

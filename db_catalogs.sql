@@ -88,7 +88,7 @@ CREATE SEQUENCE IF NOT EXISTS songs_id_seq;
 
 -- Table Definition
 CREATE TABLE "public"."songs" (
-    "id" int4 NOT NULL DEFAULT nextval('songs_id_seq'::regclass),
+    "id" SERIAL PRIMARY KEY,
     "song_name" varchar(100) NOT NULL,
     "description" text,
     "album_id" int4,

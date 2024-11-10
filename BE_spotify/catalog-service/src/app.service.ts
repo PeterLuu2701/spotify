@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 import { error, log } from 'console';
-import { AwsS3Service } from '../../api-gateway/src/aws-s3.service';
-import { AuthService } from './auth/auth.service';
+import { AwsS3Service } from './aws-s3.service';
 
 @Injectable()
 export class AppService {
   constructor(
     private prismaService: PrismaService,
     private readonly awsS3Service: AwsS3Service,
-    private authService: AuthService,
   ) {}
 
   async getAllSongCard() {
@@ -126,7 +124,6 @@ export class AppService {
   }
 
   async createSong(
-    token: string,
     song_name: string,
     description: string | undefined,
     album_id: number,
@@ -134,19 +131,9 @@ export class AppService {
     release_date: string,
     genre_id: number,
     image: string | undefined,
-    file_url: Express.Multer.File,
+    file_url: string,
   ) {
     try {
-      console.log('Token:', token);
-
-      const decodedToken = this.authService.validateToken(token);
-      console.log('Decoded Token:', decodedToken);
-
-      const userId = decodedToken.userId;
-      console.log('User ID:', userId);
-
-      const fileUrl = await this.awsS3Service.uploadFile(file_url);
-
       const newSong = await this.prismaService.dbCatalogsClient.songs.create({
         data: {
           song_name,
@@ -156,10 +143,11 @@ export class AppService {
           release_date,
           genre_id,
           image,
-          file_url: fileUrl,
+          file_url,
         },
       });
-
+      console.log('newSong', newSong);
+      
       return newSong;
     } catch (error) {
       console.error('Error creating song:', error);

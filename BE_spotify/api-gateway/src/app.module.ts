@@ -12,6 +12,8 @@ import { AwsS3Service } from './aws-s3.service';
     }),
     JwtModule.register({
       global: true,
+      secret: 'token',
+      signOptions: { expiresIn: '1d' },
     }),
 
     ClientsModule.registerAsync([
