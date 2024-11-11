@@ -88,7 +88,7 @@ CREATE SEQUENCE IF NOT EXISTS songs_id_seq;
 
 -- Table Definition
 CREATE TABLE "public"."songs" (
-    "id" SERIAL PRIMARY KEY,
+    "id" int4 NOT NULL DEFAULT nextval('songs_id_seq'::regclass),
     "song_name" varchar(100) NOT NULL,
     "description" text,
     "album_id" int4,
@@ -102,14 +102,7 @@ CREATE TABLE "public"."songs" (
     PRIMARY KEY ("id")
 );
 
-INSERT INTO "public"."album_songs" ("id", "album_id", "song_id") VALUES
-(1, 1, 1);
-INSERT INTO "public"."album_songs" ("id", "album_id", "song_id") VALUES
-(2, 2, 2);
-INSERT INTO "public"."album_songs" ("id", "album_id", "song_id") VALUES
-(3, 3, 3);
-INSERT INTO "public"."album_songs" ("id", "album_id", "song_id") VALUES
-(4, 4, 4);
+
 
 INSERT INTO "public"."albums" ("id", "title", "release_date") VALUES
 (1, 'Abbey Road', '1969-09-26');
@@ -149,20 +142,8 @@ INSERT INTO "public"."genres" ("id", "genre_name") VALUES
 (5, 'Classical'),
 (6, 'Electronic');
 
-INSERT INTO "public"."song_artists" ("id", "song_id", "artist_id") VALUES
-(1, 1, 1);
-INSERT INTO "public"."song_artists" ("id", "song_id", "artist_id") VALUES
-(2, 2, 2);
-INSERT INTO "public"."song_artists" ("id", "song_id", "artist_id") VALUES
-(3, 3, 3);
-INSERT INTO "public"."song_artists" ("id", "song_id", "artist_id") VALUES
-(4, 4, 4);
+
 
 INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
-(1, 'Come Together', 'A popular song by The Beatles', 1, '00:04:20', '1969-09-26', 'come_together.jpg', 2, '');
-INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
-(2, 'So What', 'A jazz standard by Miles Davis', 2, '00:09:22', '1959-08-17', 'so_what.jpg', 3, '');
-INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
-(4, 'One More Time', 'An iconic song by Daft Punk', 4, '00:05:20', '2001-03-12', 'one_more_time.jpg', 1, '');
-INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
-(3, 'Shake It Off', 'A hit pop song by Taylor Swift', 3, '00:03:39', '2014-10-27', 'shake_it_off.jpg', 2, '');
+(7, 'O Canada', 'Canada National Anthem', NULL, NULL, NULL, 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/800px-Flag_of_Canada_%28Pantone%29.svg.png', 4, 'https://spotifypeter.s3.us-east-1.amazonaws.com/songs/7a2ae184-c9eb-4fca-8193-e8b9fd360624-OCanada-V.A-3280706.mp3');
+

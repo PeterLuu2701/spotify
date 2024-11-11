@@ -151,7 +151,7 @@ export class AppService {
       return newSong;
     } catch (error) {
       console.error('Error creating song:', error);
-      throw new Error('Failed to create song');
+      throw new Error(error);
     }
   }
 }

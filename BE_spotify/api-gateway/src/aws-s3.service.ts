@@ -30,7 +30,7 @@ export class AwsS3Service {
       return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
     } catch (error) {
       console.error('Error uploading to S3:', error);
-      throw new Error('Failed to upload file to S3');
+      throw new Error(error);
     }
   }
 }

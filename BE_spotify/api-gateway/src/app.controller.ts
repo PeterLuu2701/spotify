@@ -89,71 +89,78 @@ export class AppController {
   }
 
   // CATALOG_SERVICE
-  @Post('/create-song')
-  @UseGuards(AuthGuard)
-  @UseInterceptors(FileInterceptor('file_url'))
-  async createSong(
-    @Req() req: Request,
-    @Body()
-    body: {
-      song_name: string;
-      description?: string;
-      album_id: number;
-      duration: string;
-      release_date: string;
-      genre_id: number;
-      image?: string;
-    },
-    @UploadedFile() file_url: Express.Multer.File,
-  ) {
-    try {
-      const {
-        song_name,
-        description,
-        album_id,
-        duration,
-        release_date,
-        genre_id,
-        image,
-      } = body;
-      console.log('req--------', req['user']);
-      const fileUrl = await this.awsS3Service.uploadFile(file_url);
-      console.log('fileUrl', fileUrl);
-      // Send the request to catalogService with the S3 URL
-      const response = await lastValueFrom(
-        this.catalogService
-          .send('create-song', {
-            song_name,
-            description,
-            album_id: Number(album_id),
-            duration,
-            release_date,
-            genre_id: Number(genre_id),
-            image,
-            file_url: fileUrl, // Use the URL instead of the file object
-          })
-          .pipe(
-            catchError((err) => {
-              return of({
-                error: err.message,
-                message: 'Unable to create song',
-              });
-            }),
-          ),
+@Post('/create-song')
+@UseGuards(AuthGuard)
+@UseInterceptors(FileInterceptor('file_url'))
+async createSong(
+  @Req() req: Request,
+  @Body()
+  body: {
+    song_name: string;
+    description?: string;
+    album_id: number;
+    duration: string;
+    release_date: string;
+    genre_id: number;
+    image?: string;
+  },
+  @UploadedFile() file_url: Express.Multer.File,
+) {
+  try {
+    const {
+      song_name,
+      description,
+      album_id,
+      duration,
+      release_date,
+      genre_id,
+      image,
+    } = body;
+
+    console.log('req--------', req['user']);
+    
+    // Upload the file to S3 and get the URL
+    const fileUrl = await this.awsS3Service.uploadFile(file_url);
+    console.log('fileUrl', fileUrl);
+
+    // Send the request to catalogService with the S3 URL
+    const response = await lastValueFrom(
+      this.catalogService
+        .send('create-song', {
+          song_name,
+          description,
+          album_id: Number(album_id),
+          duration,
+          release_date,
+          genre_id: Number(genre_id),
+          image,
+          file_url: fileUrl,
+        })
+        .pipe(
+          catchError((err) => {
+            console.error('Error in catalogService.create-song:', err);
+            return of({
+              error: true,
+              message: 'Internal server error while creating song in catalog service',
+              details: err.message,  // Additional error details for debugging
+            });
+          }),
+        ),
+    );
+
+    // Check for error in response
+    if (response?.error) {
+      throw new UnauthorizedException(
+        response.message || 'Song creation failed in catalog service',
       );
-
-      if (response?.error) {
-        throw new UnauthorizedException(
-          response.message || 'Song creation failed',
-        );
-      }
-
-      return response;
-    } catch (error) {
-      console.error('Error creating song:', error);
-      throw new UnauthorizedException('Failed to create song');
     }
+
+    return response;
+  } catch (error) {
+    console.error('Error creating song in app.controller:', error);
+    throw new UnauthorizedException('Failed to create song in app.controller');
   }
+}
 
   @Get('/get-all-song-card')
   async getAllSongCard() {
@@ -163,6 +170,7 @@ export class AppController {
           return of({
             err,
             message: 'Unable to get song cards',
+            details: err.stack || err.message, 
           });
         }),
       ),
@@ -287,9 +295,9 @@ export class AppController {
 
   // PLAYLIST_SERVICE
   @Post('/create-playlist')
-  @UseGuards()
+  @UseGuards(AuthGuard)
   async createPlaylist(
-    @Headers('token') token: string,
+    @Req() req: Request,
     @Body()
     body: {
       playlist_name: string;
@@ -304,7 +312,7 @@ export class AppController {
       const response = await lastValueFrom(
         this.playlistService
           .send('create-playlist', {
-            token,
+            user: req['user'],
             playlist_name,
             description,
             is_public,
@@ -333,41 +341,41 @@ export class AppController {
   }
 
   @Delete('/delete-playlist')
-  @UseGuards()
-  async deletePlaylist(
-    @Headers('token') token: string,
-    @Body() body: { playlist_id: string },
-  ) {
-    try {
-      const { playlist_id } = body;
+@UseGuards(AuthGuard)
+async deletePlaylist(
+  @Req() req: Request,
+  @Body() body: { playlist_id: string },
+) {
+  try {
+    const { playlist_id } = body;
 
-      const response = await lastValueFrom(
-        this.playlistService
-          .send('delete-playlist', { token, playlist_id })
-          .pipe(
-            catchError((err) => {
-              return of({
-                error: err.message,
-                message: 'Unable to delete playlist',
-              });
-            }),
-          ),
-      );
+    const response = await lastValueFrom(
+      this.playlistService
+        .send('delete-playlist', { user: req['user'], playlist_id })
+        .pipe(
+          catchError((err) => {
+            return of({
+              error: err.message,
+              message: 'Unable to delete playlist',
+            });
+          }),
+        ),
+    );
 
-      if (response?.error) {
-        throw new UnauthorizedException(response.message);
-      }
-
-      return response;
-    } catch (error) {
-      throw new UnauthorizedException('Failed to delete playlist');
+    if (response?.error) {
+      throw new UnauthorizedException(response.message);
     }
+
+    return response;
+  } catch (error) {
+    throw new UnauthorizedException('Failed to delete playlist');
   }
+}
 
   @Patch('/edit-playlist')
-  @UseGuards()
+  @UseGuards(AuthGuard)
   async editPlaylist(
-    @Headers('token') token: string,
+    @Req() req: Request,
     @Body()
     body: {
       playlist_id: number;
@@ -384,7 +392,7 @@ export class AppController {
       const response = await lastValueFrom(
         this.playlistService
           .send('edit-playlist', {
-            token,
+            user: req['user'],
             playlist_id,
             playlist_name,
             description,
@@ -403,7 +411,52 @@ export class AppController {
 
       if (response?.error) {
         throw new UnauthorizedException(
-          response.message || 'Playlist creation failed',
+          response.message || 'Playlist edit failed',
+        );
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to edit playlist');
+    }
+  }
+
+  // addSongToPlaylist
+  @Post('/add-song-to-playlist')
+  @UseGuards(AuthGuard)
+  async addSongToPlaylist(
+    @Req() req: Request,
+    @Body()
+    body: {
+      playlist_id: number;
+      song_id: number;
+      
+    },
+  ) {
+    try {
+      const { playlist_id, song_id } =
+        body;
+
+      const response = await lastValueFrom(
+        this.playlistService
+          .send('add-song-to-playlist', {
+            user: req['user'],
+            playlist_id,
+            song_id
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to edit playlist',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(
+          response.message || 'Playlist edit failed',
         );
       }
 
