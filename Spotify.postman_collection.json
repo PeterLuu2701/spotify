@@ -41,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \r\n      \"name\": \"test\", \r\n      \"email\": \"test@gmail.com\", \r\n      \"password\": \"1234\",\r\n      \"avatar\": \"1234\",\r\n      \"description\": \"Tester is here\",\r\n      \"banner\": \"1234\",\r\n      \"nationality\": \"Canada\" \r\n    }",
+					"raw": "{ \r\n      \"name\": \"test streaming\", \r\n      \"email\": \"testStreaming@gmail.com\", \r\n      \"password\": \"1234\",\r\n      \"avatar\": \"1234\",\r\n      \"description\": \"Test streaming\",\r\n      \"banner\": \"1234\",\r\n      \"nationality\": \"Canada\" \r\n    }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -185,8 +185,8 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "token",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMDY5NTMxOSwiZXhwIjoxNzMwNzgxNzE5fQ.yJVkY4GgA9K0jYCFKAxrtfXy4_E35N1c61fLvB-qUNQ",
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTMwNTU4OCwiZXhwIjoxNzMxMzkxOTg4fQ.8fCpKW8DYHBC-G4h4FLga9gU_WNINanyJCS9Ov7F4RU",
 						"type": "text"
 					}
 				],
@@ -219,14 +219,14 @@
 				"method": "DELETE",
 				"header": [
 					{
-						"key": "token",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMDY5NTMxOSwiZXhwIjoxNzMwNzgxNzE5fQ.yJVkY4GgA9K0jYCFKAxrtfXy4_E35N1c61fLvB-qUNQ",
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTMwNTU4OCwiZXhwIjoxNzMxMzkxOTg4fQ.8fCpKW8DYHBC-G4h4FLga9gU_WNINanyJCS9Ov7F4RU",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"playlist_id\": 8\r\n}",
+					"raw": "{\r\n    \"playlist_id\": 10\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -323,6 +323,61 @@
 						"api-gateway",
 						"get-playlist-by-user-id",
 						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Song",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTMwMDAzNSwiZXhwIjoxNzMxMzg2NDM1fQ.d5eACh_hayaOnfS_53EE1iTTcUeoh6Wx99m0t0_ocdg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file_url",
+							"type": "file",
+							"src": "/C:/Users/longl/Downloads/OCanada-V.A-3280706.mp3"
+						},
+						{
+							"key": "song_name",
+							"value": "O Canada",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Canada National Anthem",
+							"type": "text"
+						},
+						{
+							"key": "genre_id",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"value": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/800px-Flag_of_Canada_%28Pantone%29.svg.png",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/api-gateway/create-song",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"create-song"
 					]
 				}
 			},

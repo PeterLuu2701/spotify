@@ -8,26 +8,30 @@ export class AppController {
 
   // createPlayList
   @MessagePattern('create-playlist')
-  createPlaylist(@Payload() data: { token: string; playlist_name: string ; description: string; is_public: boolean; image: string }) {
-    const token = data.token.replace('Bearer ', '');
-    const { playlist_name, description, is_public, image } = data;
-    return this.appService.createPlaylist(token, playlist_name, description, is_public, image);
+  createPlaylist(@Payload() data: { user: any; playlist_name: string ; description: string; is_public: boolean; image: string }) {
+    const { user, playlist_name, description, is_public, image } = data;
+    return this.appService.createPlaylist(user, playlist_name, description, is_public, image);
   }
 
   // deletePlaylist
   @MessagePattern('delete-playlist')
-  deletePlaylist(@Payload() data: { token: string; playlist_id: number }) {
-    const token = data.token.replace('Bearer ', '');
-    const { playlist_id } = data;
-    return this.appService.deletePlaylist(token, playlist_id);
-  }
+deletePlaylist(@Payload() data: { user: any; playlist_id: number }) {
+  const { user, playlist_id } = data;
+  return this.appService.deletePlaylist(user, playlist_id);
+}
 
   // editPlayList
   @MessagePattern('edit-playlist')
-  editPlaylist(@Payload() data: { token: string; playlist_id: number; playlist_name: string ; description: string; is_public: boolean; image: string }) {
-    const token = data.token.replace('Bearer ', '');
-    const { playlist_id, playlist_name, description, is_public, image } = data;
-    return this.appService.editPlaylist(token, playlist_id, playlist_name, description, is_public, image);
+  editPlaylist(@Payload() data: { user: any; playlist_id: number; playlist_name: string ; description: string; is_public: boolean; image: string }) {
+    const { user, playlist_id, playlist_name, description, is_public, image } = data;
+    return this.appService.editPlaylist(user, playlist_id, playlist_name, description, is_public, image);
+  }
+
+  // addSongToPlaylist
+  @MessagePattern('add-song-to-playlist')
+  addSongToPlaylist(@Payload() data: { user: any; playlist_id: number; song_id: number }) {
+    const { user, playlist_id, song_id } = data;
+    return this.appService.addSongToPlaylist(user, playlist_id, song_id);
   }
 
   // getPlayListById
@@ -42,14 +46,6 @@ export class AppController {
   getPlaylistByUserId(@Payload() data: { userId: number }) {
     const { userId } = data
     return this.appService.getPlaylistByUserId(userId);
-  }
-
-  // createSong
-  @MessagePattern('edit-playlist')
-  editPlaylist(@Payload() data: { token: string; playlist_id: number; playlist_name: string ; description: string; is_public: boolean; image: string }) {
-    const token = data.token.replace('Bearer ', '');
-    const { playlist_id, playlist_name, description, is_public, image } = data;
-    return this.appService.editPlaylist(token, playlist_id, playlist_name, description, is_public, image);
   }
 
   

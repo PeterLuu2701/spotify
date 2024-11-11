@@ -1,29 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
-import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class AppService {
-  constructor(
-    private prismaService: PrismaService,
-    private authService: AuthService,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
 
   // createPlayList
   async createPlaylist(
-    token: string,
+    user: any,
     playlist_name: string,
     description: string,
     is_public: boolean,
     image: string,
   ) {
     try {
-      console.log('Token:', token);
+      console.log('Token:', user);
 
-      const decodedToken = this.authService.validateToken(token);
-      console.log('Decoded Token:', decodedToken);
-
-      const userId = decodedToken.userId;
+      const userId = user.userId;
       console.log('User ID:', userId);
 
       const playlist = await this.prismaService.playlists.create({
@@ -44,14 +37,11 @@ export class AppService {
   }
 
   // deletePlaylist
-  async deletePlaylist(token: string, playlist_id: number) {
+  async deletePlaylist(user: any, playlist_id: number) {
     try {
-      console.log('Token:', token);
+      console.log('User:', user); // Now the user is passed directly
 
-      const decodedToken = this.authService.validateToken(token);
-      console.log('Decoded Token:', decodedToken);
-
-      const userId = decodedToken.userId;
+      const userId = user.userId; // Use the user ID from the decoded token
       console.log('User ID:', userId);
 
       const checkUser = await this.prismaService.playlists.findFirst({
@@ -79,7 +69,7 @@ export class AppService {
 
   // editPlayList
   async editPlaylist(
-    token: string,
+    user: any,
     playlist_id: number,
     playlist_name: string,
     description: string,
@@ -87,12 +77,9 @@ export class AppService {
     image: string,
   ) {
     try {
-      console.log('Token:', token);
+      console.log('Token:', user);
 
-      const decodedToken = this.authService.validateToken(token);
-      console.log('Decoded Token:', decodedToken);
-
-      const userId = decodedToken.userId;
+      const userId = user.userId;
       console.log('User ID:', userId);
 
       const checkUser = await this.prismaService.playlists.findFirst({
@@ -124,61 +111,76 @@ export class AppService {
     }
   }
 
+  // addSongToPlaylist
+  async addSongToPlaylist(user: any, playlist_id: number, song_id: number) {
+    try {
+      console.log('Token:', user);
+
+      const userId = user.userId;
+      console.log('User ID:', userId);
+
+      const songToBeAdded = await this.prismaService.playlist_songs.create({
+        data: {
+          user_id: Number(userId),
+          playlist_id,
+          song_id,
+        },
+      });
+      return songToBeAdded;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // getPlayListById
   async getPlaylistByPlaylistId(playlistId: number) {
     try {
-    console.log('Input Playlist ID:', playlistId);
-    const privatePlaylist = await this.prismaService.playlists.findFirst({
-      where: {
-        id: Number(playlistId), 
-        is_public: false,
-      },
-    });
+      console.log('Input Playlist ID:', playlistId);
+      const privatePlaylist = await this.prismaService.playlists.findFirst({
+        where: {
+          id: Number(playlistId),
+          is_public: false,
+        },
+      });
 
-    if (privatePlaylist) {
-      console.log('Private Playlist ID:', privatePlaylist);
-      return 'This is a private playlist';
-    }
+      if (privatePlaylist) {
+        console.log('Private Playlist ID:', privatePlaylist);
+        return 'This is a private playlist';
+      }
 
-    const playlist = await this.prismaService.playlists.findFirst({
-      where: {
-        id: Number(playlistId),
-        is_public: true,
-      },
-    });
+      const playlist = await this.prismaService.playlists.findFirst({
+        where: {
+          id: Number(playlistId),
+          is_public: true,
+        },
+      });
 
-    if (!playlist) {
-      throw new Error('Playlist not found');
-    }
-    return playlist;
+      if (!playlist) {
+        throw new Error('Playlist not found');
+      }
+      return playlist;
     } catch (error) {
       throw error;
     }
   }
 
-    // getPlayListByUser
+  // getPlayListByUser
   async getPlaylistByUserId(userId: number) {
     try {
-    console.log('Input Playlist ID:', userId);
-    const playlist = await this.prismaService.playlists.findMany({
-      where: {
-        user_id: Number(userId), 
-        is_public: true,
-      },
-    });
+      console.log('Input Playlist ID:', userId);
+      const playlist = await this.prismaService.playlists.findMany({
+        where: {
+          user_id: Number(userId),
+          is_public: true,
+        },
+      });
 
-    if (!playlist) {
-      throw new Error('Playlist not found');
-    }
-    return playlist;
+      if (!playlist) {
+        throw new Error('Playlist not found');
+      }
+      return playlist;
     } catch (error) {
       throw error;
     }
   }
-
-  
-
 }
-  
-
-  
