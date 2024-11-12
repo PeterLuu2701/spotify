@@ -28,17 +28,17 @@ export class AppController {
 
   @MessagePattern('get-songs-by-genre')
   getSongsByGenres(@Payload() data: { genreId: number }) {
-    const { genreId } = data
+    const { genreId } = data;
     return this.appService.getSongsByGenres(genreId);
   }
 
   // getSongById
   @MessagePattern('get-song-detail-by-song-id')
   getSongDetailBySongId(@Payload() data: { songId: number }) {
-    const { songId } = data
+    const { songId } = data;
     return this.appService.getSongDetailBySongId(songId);
   }
-  
+
   //createSong
   @MessagePattern('create-song')
   async createSong(
@@ -54,7 +54,16 @@ export class AppController {
       file_url: string;
     },
   ) {
-    const { song_name, description, album_id, duration, release_date, genre_id, image, file_url } = data;
+    const {
+      song_name,
+      description,
+      album_id,
+      duration,
+      release_date,
+      genre_id,
+      image,
+      file_url,
+    } = data;
 
     return this.appService.createSong(
       song_name,
@@ -64,7 +73,20 @@ export class AppController {
       release_date,
       genre_id,
       image,
-      file_url
+      file_url,
     );
+  }
+
+  //deleteSong
+  @MessagePattern('delete-song')
+  async deleteSong(
+    @Payload()
+    data: {
+      song_id: number;
+    },
+  ) {
+    const { song_id } = data;
+    
+    return this.appService.deleteSong(song_id);
   }
 }

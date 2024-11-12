@@ -110,7 +110,7 @@ export class AppService {
   async getSongDetailBySongId(songId: number) {
     try {
       const songDetailById =
-        await this.prismaService.dbCatalogsClient.songs.findFirst({
+        await this.prismaService.dbCatalogsClient.songs.findUnique({
           where: {
             id: Number(songId),
           },
@@ -154,4 +154,28 @@ export class AppService {
       throw new Error(error);
     }
   }
+
+  async deleteSong(song_id: number) {
+    try {
+        console.log("song_id: ", song_id);
+        
+        const idForAwsDelete = await this.getSongDetailBySongId(Number(song_id));
+
+        if (!idForAwsDelete) {
+            throw new Error(`Song with id ${song_id} not found.`);
+        }
+
+        const songToDelete = await this.prismaService.dbCatalogsClient.songs.delete({
+            where: {
+                id: idForAwsDelete.id,
+            },
+        });
+        console.log('songToDelete', songToDelete);
+
+        return songToDelete;
+    } catch (error) {
+        console.error('Error deleting song:', error);
+        throw new Error('Failed to delete song');
+    }
+}
 }
