@@ -253,14 +253,14 @@
 				"method": "PATCH",
 				"header": [
 					{
-						"key": "token",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMDc4MjA0NCwiZXhwIjoxNzMwODY4NDQ0fQ.W7pmIQ8VHWlRtj6v-Q3Tdsb-gIXSwouQK0Nl6fFHfBY",
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTMwNTU4OCwiZXhwIjoxNzMxMzkxOTg4fQ.8fCpKW8DYHBC-G4h4FLga9gU_WNINanyJCS9Ov7F4RU",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"playlist_id\": 9,\r\n    \"playlist_name\": \"Put Test\",\r\n    \"description\": \"Put Test\",\r\n    \"image\": \"Put\"\r\n}",
+					"raw": "{\r\n    \"playlist_id\": 11,\r\n    \"playlist_name\": \"Put Test\",\r\n    \"description\": \"Put Test\",\r\n    \"image\": \"Put\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -279,8 +279,8 @@
 					],
 					"query": [
 						{
-							"key": "token",
-							"value": "Bearer localhost:8080/api-gateway/create-playlist",
+							"key": "",
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -378,6 +378,66 @@
 					"path": [
 						"api-gateway",
 						"create-song"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Song To Playlist",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTMwNTU4OCwiZXhwIjoxNzMxMzkxOTg4fQ.8fCpKW8DYHBC-G4h4FLga9gU_WNINanyJCS9Ov7F4RU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"playlist_id\": 1,\r\n    \"song_id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api-gateway/add-song-to-playlist",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"add-song-to-playlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Song",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTM5MzgyNiwiZXhwIjoxNzMxNDgwMjI2fQ.rkcw3e41hV22j9QDmqA_hgWncDtOUZDqF6sKJNKXn-0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api-gateway/delete-song/8",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-gateway",
+						"delete-song",
+						"8"
 					]
 				}
 			},
