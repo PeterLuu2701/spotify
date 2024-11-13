@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model comments {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  content      String
+  song_id      Int
+  comment_date DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model follows {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  artist_id   Int
+  follow_date DateTime? @db.Date
+}
+
+model friends {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  friend_id   Int
+  accept_date DateTime? @db.Date
+}

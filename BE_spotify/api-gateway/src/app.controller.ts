@@ -30,6 +30,7 @@ export class AppController {
     @Inject('PLAYLIST_NAME') private playlistService: ClientProxy,
     @Inject('STREAMING_NAME') private streamingService: ClientProxy,
     @Inject('SEARCH_NAME') private searchService: ClientProxy,
+    @Inject('SOCIAL_NAME') private socialService: ClientProxy,
     private readonly awsS3Service: AwsS3Service,
   ) {}
 
@@ -553,4 +554,70 @@ export class AppController {
 
     return response;
   }
+
+  // SOCIAL-SERVICE
+  @Get('/get-all-comments')
+  async getAllComments() {
+    const response = await lastValueFrom(
+      this.socialService.send('get-all-comments', '').pipe(
+        catchError((err) => {
+          return of({
+            err,
+            message: 'Unable to get artists',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
+
+  @Post('/create-comment')
+  @UseGuards(AuthGuard)
+  async createComment(
+    @Req() req: Request,
+    @Body()
+    body: {
+      content: string;
+      song_id: number;
+      comment_date: Date
+    },
+  ) {
+    try {
+      const { content, song_id, comment_date } = body;
+
+      const response = await lastValueFrom(
+        this.playlistService
+          .send('create-comment', {
+            user: req['user'],
+            content,
+            song_id,
+            comment_date
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to make a comment',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(
+          response.message || 'Comment failed',
+        );
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to post comment');
+    }
+  }
+
 }

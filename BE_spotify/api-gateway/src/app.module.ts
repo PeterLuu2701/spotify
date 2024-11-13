@@ -105,6 +105,24 @@ import { AwsS3Service } from './aws-s3.service';
         inject: [ConfigService],
       },
     ]),
+
+    ClientsModule.registerAsync([
+      {
+        name: 'SOCIAL_NAME',
+        imports: [ConfigModule],
+        useFactory: async (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('RABBITMQ_URL')],
+            queue: 'social_queue',
+            queueOptions: {
+              durable: false,
+            },
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [AwsS3Service],
