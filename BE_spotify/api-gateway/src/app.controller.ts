@@ -142,7 +142,7 @@ export class AppController {
                 error: true,
                 message:
                   'Internal server error while creating song in catalog service',
-                details: err.message, 
+                details: err.message,
               });
             }),
           ),
@@ -584,19 +584,17 @@ export class AppController {
     body: {
       content: string;
       song_id: number;
-      comment_date: Date
     },
   ) {
     try {
-      const { content, song_id, comment_date } = body;
+      const { content, song_id } = body;
 
       const response = await lastValueFrom(
-        this.playlistService
+        this.socialService
           .send('create-comment', {
             user: req['user'],
             content,
             song_id,
-            comment_date
           })
           .pipe(
             catchError((err) => {
@@ -609,9 +607,7 @@ export class AppController {
       );
 
       if (response?.error) {
-        throw new UnauthorizedException(
-          response.message || 'Comment failed',
-        );
+        throw new UnauthorizedException(response.message || 'Comment failed');
       }
 
       return response;
@@ -620,4 +616,297 @@ export class AppController {
     }
   }
 
+  @Put('/edit-comment')
+  @UseGuards(AuthGuard)
+  async editComment(
+    @Req() req: Request,
+    @Body()
+    body: {
+      id: number;
+      content: string;
+      song_id: number;
+    },
+  ) {
+    try {
+      const { id, content, song_id } = body;
+
+      const response = await lastValueFrom(
+        this.socialService
+          .send('edit-comment', {
+            user: req['user'],
+            id,
+            content,
+            song_id,
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to edit comment',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(
+          response.message || 'Comment editting failed',
+        );
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to edit comment');
+    }
+  }
+
+  @Delete('/delete-comment')
+  @UseGuards(AuthGuard)
+  async deleteComment(
+    @Req() req: Request,
+    @Body()
+    body: {
+      id: number;
+    },
+  ) {
+    try {
+      const { id } = body;
+
+      const response = await lastValueFrom(
+        this.socialService
+          .send('delete-comment', {
+            user: req['user'],
+            id,
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to delete comment',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(
+          response.message || 'Comment deleting failed',
+        );
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to delete comment');
+    }
+  }
+
+  @Post('/create-artist-follow')
+  @UseGuards(AuthGuard)
+  async createArtistFollow(
+    @Req() req: Request,
+    @Body()
+    body: {
+      artist_id: number;
+    },
+  ) {
+    try {
+      const { artist_id } = body;
+
+      const response = await lastValueFrom(
+        this.socialService
+          .send('create-artist-follow', {
+            user: req['user'],
+            artist_id,
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to follow',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Follow failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to follow an artist');
+    }
+  }
+
+  @Get('/get-all-follow')
+  @UseGuards(AuthGuard)
+  async getAllFollow(@Req() req: Request) {
+    try {
+      const response = await lastValueFrom(
+        this.socialService
+          .send('get-all-follow', {
+            user: req['user'],
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to get follow',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Get failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to get all following');
+    }
+  }
+
+  @Delete('/delete-artist-follow')
+  @UseGuards(AuthGuard)
+  async deleteArtistFollow(
+    @Req() req: Request,
+    @Body()
+    body: {
+      artist_id: number;
+    },
+  ) {
+    try {
+      const { artist_id } = body;
+
+      const response = await lastValueFrom(
+        this.socialService
+          .send('delete-artist-follow', {
+            user: req['user'],
+            artist_id,
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to unfollow',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Unfollow failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to unfollow an artist');
+    }
+  }
+
+  @Post('/create-friend')
+  @UseGuards(AuthGuard)
+  async createFriend(
+    @Req() req: Request,
+    @Body()
+    body: {
+      friend_id: number;
+    },
+  ) {
+    try {
+      const { friend_id } = body;
+
+      const response = await lastValueFrom(
+        this.socialService
+          .send('create-friend', {
+            user: req['user'],
+            friend_id,
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to make friend',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Friend request failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to create friend');
+    }
+  }
+
+  @Get('/get-all-friends')
+  @UseGuards(AuthGuard)
+  async getAllFriends(@Req() req: Request) {
+    try {
+      const response = await lastValueFrom(
+        this.socialService
+          .send('get-all-friends', {
+            user: req['user'],
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to get friend list',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Get failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to get all friends');
+    }
+  }
+
+  @Delete('/delete-friend')
+  @UseGuards(AuthGuard)
+  async deleteFriend(
+    @Req() req: Request,
+    @Body()
+    body: {
+      friend_id: number;
+    },
+  ) {
+    try {
+      const { friend_id } = body;
+
+      const response = await lastValueFrom(
+        this.socialService
+          .send('delete-friend', {
+            user: req['user'],
+            friend_id,
+          })
+          .pipe(
+            catchError((err) => {
+              return of({
+                error: err.message,
+                message: 'Unable to unfriend',
+              });
+            }),
+          ),
+      );
+
+      if (response?.error) {
+        throw new UnauthorizedException(response.message || 'Unfriend failed');
+      }
+
+      return response;
+    } catch (error) {
+      throw new UnauthorizedException('Failed to unfriend');
+    }
+  }
 }
