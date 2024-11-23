@@ -10,13 +10,13 @@ import { useNavigate } from "react-router-dom";
 export default function Genre() {
   const dispatch = useDispatch<AppDispatch>();
   const { songGenre } = useAppSelector((state) => state.song);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchAndSetSongGenre());
   }, [dispatch]);
 
-const renderGenre = () => {
+  const renderGenre = () => {
     return songGenre?.map((genre, index: number) => (
       <div
         key={genre.id}
@@ -31,9 +31,14 @@ const renderGenre = () => {
   return (
     <div className="genre-page">
       <h1 className="genre-title">Genres All</h1>
-      <div className="genre-grid">
-        {renderGenre()}
-      </div>
+      <div className="genre-grid">{renderGenre()}</div>
+      <audio controls autoPlay>
+        <source
+          src="http://localhost:8080/api-gateway/play-song-by-id/6"
+          type="audio/mpeg"
+        />
+        Your browser does not support the audio element.
+      </audio>
     </div>
   );
 }

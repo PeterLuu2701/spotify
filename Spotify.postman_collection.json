@@ -715,6 +715,200 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "create song",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTIzMDY2NCwiZXhwIjoxNzMxMzE3MDY0fQ.Oen4qJakMKXlOTEXvmabkRsGLOW5v4CIrR8O1Ne54Ag",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "song_name",
+							"value": "abc",
+							"type": "text"
+						},
+						{
+							"key": "album_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "duration",
+							"value": "2023-11-21T12:34:56Z",
+							"type": "text"
+						},
+						{
+							"key": "release_date",
+							"value": "2023-11-01T12:34:56Z",
+							"type": "text"
+						},
+						{
+							"key": "genre_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "file_url",
+							"type": "file",
+							"src": "/C:/Users/LENOVO/Downloads/ChungTaCuaTuongLai-SonTungMTP-14032595.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/create-song",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"create-song"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "play song",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/play-song-by-id/4",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"play-song-by-id",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create streaming session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 1,\r\n    \"songId\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/streaming/session",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"streaming",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch streaming session pause",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/streaming/session/6/pause",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"streaming",
+						"session",
+						"6",
+						"pause"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch streaming session resume",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/streaming/session/6/resume",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"streaming",
+						"session",
+						"6",
+						"resume"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get streaming sessions user",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMjMyODI5NCwiZXhwIjoxNzMyNDE0Njk0fQ.uzYt6TjoSuQoYpvuFPqJTBJvKNu33V23KYujDBTHscY",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/streaming/sessions/user",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"streaming",
+						"sessions",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get streaming session detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/streaming/session/6",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"streaming",
+						"session",
+						"6"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
