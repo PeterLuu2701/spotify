@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=1234
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false  # Tắt bảo mật (nếu bạn không cần bảo mật)
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"  # Elasticsearch HTTP API
+      - "9300:9300"  # Elasticsearch Transport (liên lạc giữa các node)
+    volumes:
+      - es_data:/usr/share/elasticsearch/data  # Dữ liệu Elasticsearch sẽ được lưu vào volume này
+    networks:
+      - node-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.5.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # Kibana kết nối với Elasticsearch
+    ports:
+      - "5601:5601"  # Cổng truy cập Kibana Web UI
+    networks:
+      - node-network
+    depends_on:
+      - elasticsearch  # Kibana sẽ đợi Elasticsearch khởi động trước
+
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  node-network:
+    external: true

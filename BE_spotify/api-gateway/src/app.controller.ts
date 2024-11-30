@@ -131,34 +131,31 @@ export class AppController {
         image,
       } = body;
 
-      console.log('req--------', req['user']);
-
       const fileUrl = await this.awsS3Service.uploadFile(file_url);
-      console.log('fileUrl', fileUrl);
+
+      const songParams = {
+        song_name,
+        description,
+        album_id: Number(album_id),
+        duration,
+        release_date,
+        genre_id: Number(genre_id),
+        image,
+        file_url: fileUrl,
+      };
 
       const response = await lastValueFrom(
-        this.catalogService
-          .send('create-song', {
-            song_name,
-            description,
-            album_id: Number(album_id),
-            duration,
-            release_date,
-            genre_id: Number(genre_id),
-            image,
-            file_url: fileUrl,
-          })
-          .pipe(
-            catchError((err) => {
-              console.error('Error in catalogService.create-song:', err);
-              return of({
-                error: true,
-                message:
-                  'Internal server error while creating song in catalog service',
-                details: err.message,
-              });
-            }),
-          ),
+        this.catalogService.send('create-song', songParams).pipe(
+          catchError((err) => {
+            console.error('Error in catalogService.create-song:', err);
+            return of({
+              error: true,
+              message:
+                'Internal server error while creating song in catalog service',
+              details: err.message,
+            });
+          }),
+        ),
       );
 
       if (response?.error) {
@@ -167,6 +164,25 @@ export class AppController {
         );
       }
 
+      await lastValueFrom(
+        this.searchService
+          .send('index-song', {
+            index: 'songs',
+            id: response.song_id,
+            document: songParams,
+          })
+          .pipe(
+            catchError((err) => {
+              console.error('Error in searchService.index-song:', err);
+              return of({
+                error: true,
+                message:
+                  'Internal server error while creating song in search service',
+                details: err.message,
+              });
+            }),
+          ),
+      );
       return response;
     } catch (error) {
       console.error('Error creating song in app.controller:', error);

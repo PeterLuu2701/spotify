@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @MessagePattern('index-song')
+  indexDocument(@Payload() data: { index: string; id: string; document: any }) {
+    return this.appService.indexDocument(data.index, data.id, data.document);
   }
 }
