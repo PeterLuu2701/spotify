@@ -1,25 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService {
-  dbStreamingClient: PrismaClient;
-
-  constructor() {
-    this.dbStreamingClient = new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL, 
-        },
-      },
-    });
-  }
-
+export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
-    await this.dbStreamingClient.$connect();
-  }
-
-  async onModuleDestroy() {
-    await this.dbStreamingClient.$disconnect();
+    await this.$connect();
   }
 }

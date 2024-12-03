@@ -10,4 +10,9 @@ export class AppController {
   indexDocument(@Payload() data: { index: string; id: string; document: any }) {
     return this.appService.indexDocument(data.index, data.id, data.document);
   }
+
+  @MessagePattern('search-song')
+  async searchSong(@Payload() query: any) {
+    return this.appService.search('songs', query);
+  }
 }
