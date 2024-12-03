@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -1121,5 +1122,42 @@ export class AppController {
     );
 
     return { ...session, song };
+  }
+
+  @Get('/search-song')
+  async searchSong(@Query('keyword') keyword: string) {
+    if (!keyword) {
+      throw new UnauthorizedException('Keyword is required');
+    }
+
+    const query = {
+      query: {
+        multi_match: {
+          query: keyword,
+          fields: ['song_name', 'description'],
+          fuzziness: 'AUTO',
+        },
+      },
+    };
+
+    const response = await lastValueFrom(
+      this.searchService.send('search-song', query).pipe(
+        catchError((err) => {
+          console.error('Error in searchService.search-song:', err);
+          return of({
+            error: true,
+            message:
+              'Internal server error while searching songs in search service',
+            details: err.message,
+          });
+        }),
+      ),
+    );
+
+    if (response?.error) {
+      throw new UnauthorizedException(response.message || 'Search failed');
+    }
+
+    return response;
   }
 }

@@ -9,7 +9,7 @@ export class AppService {
     try {
       const { userId, songId } = params;
       const session =
-        await this.prismaService.dbStreamingClient.streaming.create({
+        await this.prismaService.streaming.create({
           data: {
             user_id: Number(userId),
             song_id: Number(songId),
@@ -30,7 +30,7 @@ export class AppService {
     try {
       const { sessionId } = params;
       const session =
-        await this.prismaService.dbStreamingClient.streaming.findUnique({
+        await this.prismaService.streaming.findUnique({
           where: {
             id: Number(sessionId),
           },
@@ -40,7 +40,7 @@ export class AppService {
         return false;
       }
 
-      await this.prismaService.dbStreamingClient.streaming.update({
+      await this.prismaService.streaming.update({
         where: {
           id: Number(sessionId),
         },
@@ -62,7 +62,7 @@ export class AppService {
     try {
       const { sessionId } = params;
       const session =
-        await this.prismaService.dbStreamingClient.streaming.findUnique({
+        await this.prismaService.streaming.findUnique({
           where: {
             id: Number(sessionId),
           },
@@ -72,7 +72,7 @@ export class AppService {
         return false;
       }
 
-      await this.prismaService.dbStreamingClient.streaming.update({
+      await this.prismaService.streaming.update({
         where: {
           id: Number(sessionId),
         },
@@ -94,7 +94,7 @@ export class AppService {
     try {
       const { userId } = user;
       const sessions =
-        await this.prismaService.dbStreamingClient.streaming.findMany({
+        await this.prismaService.streaming.findMany({
           where: {
             user_id: Number(userId),
           },
@@ -113,7 +113,7 @@ export class AppService {
     try {
       const { sessionId } = params;
       const session =
-        await this.prismaService.dbStreamingClient.streaming.findUnique({
+        await this.prismaService.streaming.findUnique({
           where: {
             id: Number(sessionId),
           },
