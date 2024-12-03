@@ -1,15 +1,56 @@
 version: '3.8'
 services:
+  some-postgres:
+    image: postgres:14
+    container_name: some-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - node-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  some-rabbit:
+    image: rabbitmq:3-management
+    container_name: some-rabbit
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=1234
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - node-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
   api-gateway:
     container_name: api-gateway
-    build: ./api-gateway  # build bằng Dockerfile
-    # image:  # build bằng hub docker
+    build: ./api-gateway
     environment:
       - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
+      - JWT_SECRET=secret
     ports:
       - 8080:8080
     networks:
       - node-network
+    depends_on:
+      - some-postgres
+      - some-rabbit
   
   auth-service:
     container_name: auth-service
@@ -17,8 +58,13 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_users
       - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
+      - JWT_SECRET=secret
     networks:
       - node-network
+    depends_on:
+      - some-postgres
+      - some-rabbit
+      - api-gateway
   
   catalog-service:
     container_name: catalog-service
@@ -28,6 +74,10 @@ services:
       - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
     networks:
       - node-network
+    depends_on:
+      - some-postgres
+      - some-rabbit
+      - api-gateway
   
   playlist-service:
     container_name: playlist-service
@@ -35,10 +85,98 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_playlists
       - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
+      - JWT_SECRET=secret
     networks:
       - node-network
+    depends_on:
+      - some-postgres
+      - some-rabbit
+      - api-gateway
+
+  social-service:
+    container_name: social-service
+    build: ./social-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_socials
+      - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
+    networks:
+      - node-network
+    depends_on:
+      - some-postgres
+      - some-rabbit
+      - api-gateway
+
+  streaming-service:
+    container_name: streaming-service
+    build: ./streaming-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:1234@some-postgres:5432/db_streamings
+      - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
+    networks:
+      - node-network
+    depends_on:
+      - some-postgres
+      - some-rabbit
+      - api-gateway
   
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    networks:
+      - node-network
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: always
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.5.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - node-network
+    depends_on:
+      - elasticsearch
+    restart: always
+
+  search-service:
+    container_name: search-service
+    build: ./search-service
+    environment:
+      - ELASTICSEARCH_NODE=http://elasticsearch:9200
+      - RABBITMQ_URL=amqp://admin:1234@some-rabbit:5672
+    networks:
+      - node-network
+    depends_on:
+      some-rabbit:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
 networks:
   node-network:
     external: true
       
+volumes:
+  es_data:
+    driver: local
+  postgres_data:
+    driver: local

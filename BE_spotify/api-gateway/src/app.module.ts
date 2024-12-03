@@ -10,10 +10,14 @@ import { AwsS3Service } from './aws-s3.service';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    JwtModule.register({
-      global: true,
-      secret: 'token',
-      signOptions: { expiresIn: '1d' },
+
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService],
     }),
 
     ClientsModule.registerAsync([
