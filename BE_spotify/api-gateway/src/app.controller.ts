@@ -3,27 +3,34 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
+  Header,
+  HttpException,
+  HttpStatus,
   Inject,
   Param,
   Patch,
   Post,
   Put,
+  Query,
   Req,
+  Res,
   UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { log } from 'console';
-import { catchError, lastValueFrom, of, retry, timeout } from 'rxjs';
+import { catchError, lastValueFrom, of } from 'rxjs';
 import { AuthGuard } from './guards/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AwsS3Service } from './aws-s3.service';
+import { Request, Response } from 'express';
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 @Controller('api-gateway')
 export class AppController {
+  private readonly s3Client: S3Client;
+
   constructor(
     @Inject('AUTH_NAME') private authService: ClientProxy,
     @Inject('CATALOG_NAME') private catalogService: ClientProxy,
@@ -32,7 +39,15 @@ export class AppController {
     @Inject('SEARCH_NAME') private searchService: ClientProxy,
     @Inject('SOCIAL_NAME') private socialService: ClientProxy,
     private readonly awsS3Service: AwsS3Service,
-  ) {}
+  ) {
+    this.s3Client = new S3Client({
+      region: process.env.AWS_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
+    });
+  }
 
   // AUTH_SERVICE
   @Post('/login')
@@ -91,7 +106,6 @@ export class AppController {
 
   // CATALOG_SERVICE
   @Post('/create-song')
-  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file_url'))
   async createSong(
     @Req() req: Request,
@@ -118,34 +132,31 @@ export class AppController {
         image,
       } = body;
 
-      console.log('req--------', req['user']);
-
       const fileUrl = await this.awsS3Service.uploadFile(file_url);
-      console.log('fileUrl', fileUrl);
+
+      const songParams = {
+        song_name,
+        description,
+        album_id: Number(album_id),
+        duration,
+        release_date,
+        genre_id: Number(genre_id),
+        image,
+        file_url: fileUrl,
+      };
 
       const response = await lastValueFrom(
-        this.catalogService
-          .send('create-song', {
-            song_name,
-            description,
-            album_id: Number(album_id),
-            duration,
-            release_date,
-            genre_id: Number(genre_id),
-            image,
-            file_url: fileUrl,
-          })
-          .pipe(
-            catchError((err) => {
-              console.error('Error in catalogService.create-song:', err);
-              return of({
-                error: true,
-                message:
-                  'Internal server error while creating song in catalog service',
-                details: err.message,
-              });
-            }),
-          ),
+        this.catalogService.send('create-song', songParams).pipe(
+          catchError((err) => {
+            console.error('Error in catalogService.create-song:', err);
+            return of({
+              error: true,
+              message:
+                'Internal server error while creating song in catalog service',
+              details: err.message,
+            });
+          }),
+        ),
       );
 
       if (response?.error) {
@@ -154,6 +165,25 @@ export class AppController {
         );
       }
 
+      await lastValueFrom(
+        this.searchService
+          .send('index-song', {
+            index: 'songs',
+            id: response.song_id,
+            document: songParams,
+          })
+          .pipe(
+            catchError((err) => {
+              console.error('Error in searchService.index-song:', err);
+              return of({
+                error: true,
+                message:
+                  'Internal server error while creating song in search service',
+                details: err.message,
+              });
+            }),
+          ),
+      );
       return response;
     } catch (error) {
       console.error('Error creating song in app.controller:', error);
@@ -834,7 +864,9 @@ export class AppController {
       );
 
       if (response?.error) {
-        throw new UnauthorizedException(response.message || 'Friend request failed');
+        throw new UnauthorizedException(
+          response.message || 'Friend request failed',
+        );
       }
 
       return response;
@@ -908,5 +940,224 @@ export class AppController {
     } catch (error) {
       throw new UnauthorizedException('Failed to unfriend');
     }
+  }
+
+  // api streaming
+  @Get('/play-song-by-id/:songId')
+  @Header('Content-Type', 'audio/mpeg')
+  @Header('Content-Disposition', 'inline')
+  async playSongById(@Param('songId') songId: number, @Res() res: Response) {
+    const song = await lastValueFrom(
+      this.catalogService.send('get-song-detail-by-song-id', { songId }).pipe(
+        catchError((err) => {
+          return of({
+            err,
+            message: 'Unable to get song detail',
+          });
+        }),
+      ),
+    );
+
+    const fileKey = new URL(song.file_url).pathname.substring(1);
+    const command = new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: fileKey,
+    });
+
+    try {
+      const response = await this.s3Client.send(command);
+
+      if (!response.Body) {
+        throw new HttpException('File not found in S3', HttpStatus.NOT_FOUND);
+      }
+
+      (response.Body as NodeJS.ReadableStream).pipe(res);
+    } catch (error) {
+      throw new HttpException(
+        `Failed to stream file: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // api streaming session
+  @Post('/streaming/session')
+  async createStreamingSession(
+    @Body()
+    body: {
+      songId: number;
+      userId: number;
+    },
+  ) {
+    const response = await lastValueFrom(
+      this.streamingService.send('create-streaming-session', body).pipe(
+        catchError((err) => {
+          return of({
+            err,
+            message: 'Unable to create streaming session',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return response;
+  }
+
+  // api streaming session pause
+  @Patch('/streaming/session/:sessionId/pause')
+  async pauseStreamingSession(@Param('sessionId') sessionId: number) {
+    const response = await lastValueFrom(
+      this.streamingService.send('pause-streaming-session', { sessionId }).pipe(
+        catchError((err) => {
+          return of({
+            err,
+            message: 'Unable to pause streaming session',
+          });
+        }),
+      ),
+    );
+
+    if (response?.err) {
+      throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
+    }
+
+    return response;
+  }
+
+  // api streaming session resume
+  @Patch('/streaming/session/:sessionId/resume')
+  async resumeStreamingSession(@Param('sessionId') sessionId: number) {
+    const response = await lastValueFrom(
+      this.streamingService
+        .send('resume-streaming-session', { sessionId })
+        .pipe(
+          catchError((err) => {
+            return of({
+              err,
+              message: 'Unable to resume streaming session',
+            });
+          }),
+        ),
+    );
+
+    if (response?.err) {
+      throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
+    }
+
+    return response;
+  }
+
+  // api streaming/sessions/user
+  @Get('/streaming/sessions/user')
+  @UseGuards(AuthGuard)
+  async getStreamingSessionsByUser(@Req() req: Request) {
+    const sessions = await lastValueFrom(
+      this.streamingService
+        .send('get-streaming-sessions-by-user', { user: req['user'] })
+        .pipe(
+          catchError((err) => {
+            throw new HttpException(
+              'Unable to get streaming sessions by user',
+              HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+          }),
+        ),
+    );
+
+    if (sessions?.err) {
+      throw new HttpException(
+        'No sessions found for this user',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const enhancedSessions = await Promise.all(
+      sessions.map(async (session) => {
+        const song = await lastValueFrom(
+          this.catalogService
+            .send('get-song-detail-by-song-id', { songId: session.song_id })
+            .pipe(catchError(() => of(null))),
+        );
+        return { ...session, song };
+      }),
+    );
+
+    return enhancedSessions;
+  }
+
+  @Get('/streaming/session/:sessionId')
+  async getStreamingSessionById(@Param('sessionId') sessionId: number) {
+    const session = await lastValueFrom(
+      this.streamingService
+        .send('get-streaming-session-by-id', { sessionId })
+        .pipe(
+          catchError((err) => {
+            return of({
+              err,
+              message: 'Unable to get streaming session by id',
+            });
+          }),
+        ),
+    );
+
+    if (session?.err) {
+      throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
+    }
+
+    const song = await lastValueFrom(
+      this.catalogService
+        .send('get-song-detail-by-song-id', { songId: session.song_id })
+        .pipe(
+          catchError((err) => {
+            return of({
+              err,
+              message: 'Unable to get song detail',
+            });
+          }),
+        ),
+    );
+
+    return { ...session, song };
+  }
+
+  @Get('/search-song')
+  async searchSong(@Query('keyword') keyword: string) {
+    if (!keyword) {
+      throw new UnauthorizedException('Keyword is required');
+    }
+
+    const query = {
+      query: {
+        multi_match: {
+          query: keyword,
+          fields: ['song_name', 'description'],
+          fuzziness: 'AUTO',
+        },
+      },
+    };
+
+    const response = await lastValueFrom(
+      this.searchService.send('search-song', query).pipe(
+        catchError((err) => {
+          console.error('Error in searchService.search-song:', err);
+          return of({
+            error: true,
+            message:
+              'Internal server error while searching songs in search service',
+            details: err.message,
+          });
+        }),
+      ),
+    );
+
+    if (response?.error) {
+      throw new UnauthorizedException(response.message || 'Search failed');
+    }
+
+    return response;
   }
 }
