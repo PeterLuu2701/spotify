@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c4e9f618-9a16-4d07-9cd2-134a750fd92e",
+		"_postman_id": "a14aaf04-0b1f-4161-bf5e-4ec456cefd67",
 		"name": "Spotify",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "23648943"
@@ -905,6 +905,30 @@
 						"streaming",
 						"session",
 						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Song",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/api-gateway/search-song?keyword=trai",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api-gateway",
+						"search-song"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "trai"
+						}
 					]
 				}
 			},

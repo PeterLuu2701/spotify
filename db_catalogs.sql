@@ -146,4 +146,10 @@ INSERT INTO "public"."genres" ("id", "genre_name") VALUES
 
 INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
 (7, 'O Canada', 'Canada National Anthem', NULL, NULL, NULL, 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/800px-Flag_of_Canada_%28Pantone%29.svg.png', 4, 'https://spotifypeter.s3.us-east-1.amazonaws.com/songs/7a2ae184-c9eb-4fca-8193-e8b9fd360624-OCanada-V.A-3280706.mp3');
-
+INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
+(10, 'Futari no Kimochi', 'Inuyasha', NULL, NULL, NULL, '', 4, 'https://spotifypeter.s3.us-east-1.amazonaws.com/songs/a6ba5d39-2b21-4d11-b5ec-314a86f8ed6b-DungLamTraiTimAnhDauCover-HuyVac-15072138.mp3');
+INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
+(11, 'Futari no Kimochi', 'Inuyasha', NULL, NULL, NULL, '', 4, 'https://spotifypeter.s3.us-east-1.amazonaws.com/songs/817b804d-9754-491d-b428-34b7d8e0a88d-DungLamTraiTimAnhDauCover-HuyVac-15072138.mp3');
+INSERT INTO "public"."songs" ("id", "song_name", "description", "album_id", "duration", "release_date", "image", "genre_id", "file_url") VALUES
+(12, 'Dung lam trai tim anh dau', 'Son Tung MTP', NULL, NULL, NULL, '', 4, 'https://spotifypeter.s3.us-east-1.amazonaws.com/songs/1655f468-4525-4f92-b066-efd66e5ad87f-DungLamTraiTimAnhDauCover-HuyVac-15072138.mp3'),
+(13, 'Dung lam trai tim anh dau', 'Son Tung MTP', NULL, NULL, NULL, '', 4, 'https://spotifypeter.s3.us-east-1.amazonaws.com/songs/b87e47ff-4f76-4548-8732-3013f31efee4-DungLamTraiTimAnhDauCover-HuyVac-15072138.mp3');
