@@ -23,7 +23,7 @@
   <li><strong>PostgreSQL/MySQL</strong> – Databases for storing user, song, and playlist data</li>
   <li><strong>RabbitMQ</strong> – For asynchronous communication between microservices</li>
   <li><strong>Docker</strong> – For containerizing the services</li>
-  <li><strong>AWS S3</strong> – For storing song media files (if applicable)</li>
+  <li><strong>AWS S3</strong> – For storing song media files </li>
   <li><strong>Elasticsearch</strong> – For full-text search and analytics on song data</li>
   <li><strong>Postman</strong> – For API testing and documentation</li>
   <li><strong>TablePlus</strong> – For managing and querying databases with a user-friendly interface</li>
