@@ -60,7 +60,8 @@ Before you begin, make sure you have the following installed:</p>
 <p>Import the provided SQL files and Postman collection into <strong>TablePlus</strong> (or your preferred database management platform) and <strong>Postman</strong> for testing the API.</p>
 
 <h3>4. Start the containers</h3>
-<p>To bring up the Docker containers in the background, run: <strong>docker-compose up -d</strong> .</p>
+<p>To bring up the Docker containers in the background, run:</p>
+<pre><code>docker-compose up -d</code></pre>
 
 <h3>5. Enjoy the source!</h3>
 <p>🎉 Once everything is up and running, explore the project, contribute, and have fun! 🚀</p>
